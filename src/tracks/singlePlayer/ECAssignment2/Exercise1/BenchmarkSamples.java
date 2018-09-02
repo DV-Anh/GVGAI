@@ -11,10 +11,17 @@ public class BenchmarkSamples {
 
     public static void main(String[] args) {
         String random = "tracks.singlePlayer.ECAssignment2.controllers.sampleRandom.Agent";
-        benchmark(0, random, true);
-        benchmark(11, random, true);
-        benchmark(13, random, true);
-        benchmark(18, random, true);
+        String oneAhead = "tracks.singlePlayer.ECAssignment2.controllers.sampleOneStepAhead.Agent";
+        String ga = "tracks.singlePlayer.ECAssignment2.controllers.sampleGA.Agent";
+
+        int[] targets = new int[]{0, 11, 13, 18};
+        String[] controllers = new String[]{random, oneAhead, ga};
+
+        for (String controller : controllers) {
+            for (int gameid : targets) {
+                benchmark(gameid, controller, false);
+            }
+        }
     }
 
     private static void benchmark(int gameID, String controller, boolean visualising) {
@@ -27,8 +34,8 @@ public class BenchmarkSamples {
         // + levelIdx + "_" + seed + ".txt";
         // where to record the actions
         // executed. null if not to save.
+        System.out.println("game:" + gameName + ",controller:" + controller);
         for (int i = 0; i < 5; i++) {
-            System.out.println("play:" + i + ",game:" + gameName + ",controller:" + controller);
             int seed = new Random().nextInt();
             ArcadeMachine.runOneGame(
                     game, level1,
