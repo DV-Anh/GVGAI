@@ -34,12 +34,10 @@ public class Agent extends AbstractPlayer {
             // move according to searched action
             stCopy.advance(action);
 
-            // move 2nd time according to best action
-            stCopy.advance(act2(stCopy));
-
             // measure 2 successive action's value
-            double Q = heuristic.evaluateState(stCopy);
-            Q = Utils.noise(Q, this.epsilon, this.m_rnd.nextDouble());
+            double Q=act2(stCopy);
+
+
             //System.out.println("Action:" + action + " score:" + Q);
             if (Q > maxQ) {
                 maxQ = Q;
@@ -51,9 +49,8 @@ public class Agent extends AbstractPlayer {
     }
 
 
-    private Types.ACTIONS act2(StateObservation stateObs)
+    private double act2(StateObservation stateObs)
     {
-        Types.ACTIONS bestAction = null;
         double maxQ = Double.NEGATIVE_INFINITY;
         SimpleStateHeuristic heuristic =  new SimpleStateHeuristic(stateObs);
         for (Types.ACTIONS action : stateObs.getAvailableActions())
@@ -69,10 +66,9 @@ public class Agent extends AbstractPlayer {
             //System.out.println("Action:" + action + " score:" + Q);
             if (Q > maxQ) {
                 maxQ = Q;
-                bestAction = action;
             }
         }
         //System.out.println("======== "  + maxQ + " " + bestAction + "============");
-        return bestAction;
+        return maxQ;
     }
 }

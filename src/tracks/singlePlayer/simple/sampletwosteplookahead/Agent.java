@@ -34,10 +34,10 @@ public class Agent extends AbstractPlayer {
             // move according to searched action
             stCopy.advance(action);
 
-            // move 2nd time according to best action
+            // measure 2 successive action's value
             double Q=act2(stCopy);
 
-            // measure 2 successive action's value
+
             //System.out.println("Action:" + action + " score:" + Q);
             if (Q > maxQ) {
                 maxQ = Q;
