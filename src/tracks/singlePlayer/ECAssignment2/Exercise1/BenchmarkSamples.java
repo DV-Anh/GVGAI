@@ -13,9 +13,10 @@ public class BenchmarkSamples {
         String random = "tracks.singlePlayer.ECAssignment2.controllers.sampleRandom.Agent";
         String oneAhead = "tracks.singlePlayer.ECAssignment2.controllers.sampleOneStepAhead.Agent";
         String ga = "tracks.singlePlayer.ECAssignment2.controllers.sampleGA.Agent";
+        String twoAhead = "tracks.singlePlayer.ECAssignment2.controllers.TwoStepAhead";
 
         int[] targets = new int[]{0, 11, 13, 18};
-        String[] controllers = new String[]{random, oneAhead, ga};
+        String[] controllers = new String[]{random, oneAhead, ga, twoAhead};
 
         for (String controller : controllers) {
             for (int gameid : targets) {
