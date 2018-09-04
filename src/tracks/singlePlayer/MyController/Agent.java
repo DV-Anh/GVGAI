@@ -15,11 +15,11 @@ public class Agent extends AbstractPlayer {
     private HashMap<Integer, Types.ACTIONS> actionsMapping;
     private Individual[] pop,nexPop;
     int num_action;
-    int popSize=5;
-    int depth=3;
+    int popSize=3;
+    int depth=2;
     int num_indl=0;// need to debug
-    int tournamentSize=3;
-    int generateNum=3;
+    int tournamentSize=4;
+    int generateNum=2;
     Random gen;
     WinScoreHeuristic heuristic;
     @Override
