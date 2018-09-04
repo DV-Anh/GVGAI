@@ -54,6 +54,7 @@ public class Test {
 		ArcadeMachine.runOneGame(game, level1, visuals, sampleRSController, recordActionsFile, seed, 0);
 
 
+
 		// 3. This replays a game from an action file previously recorded
 	//	 String readActionsFile = recordActionsFile;
 	//	 ArcadeMachine.replayGame(game, level1, visuals, readActionsFile);
