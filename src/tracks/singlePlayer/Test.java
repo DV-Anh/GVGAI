@@ -26,6 +26,7 @@ public class Test {
         String sampleRSController = "tracks.singlePlayer.advanced.sampleRS.Agent";
         String sampleRHEAController = "tracks.singlePlayer.advanced.sampleRHEA.Agent";
 		String sampleOLETSController = "tracks.singlePlayer.advanced.olets.Agent";
+		String MyController = "tracks.singlePlayer.MyController.Agent";
 
 		//Load available games
 		String spGamesCollection =  "examples/all_games_sp.csv";
@@ -36,7 +37,7 @@ public class Test {
 		int seed = new Random().nextInt();
 
 		// Game and level to play
-		int gameIdx = 11;//aliens=0, boulderdash=11, butterflies=13, chase=18
+		int gameIdx= 13;//aliens=0, boulderdash=11, butterflies=13, chase=18
 		int levelIdx = 0; // level names from 0 to 4 (game_lvlN.txt).
 		String gameName = games[gameIdx][1];
 		String game = games[gameIdx][0];
@@ -51,7 +52,7 @@ public class Test {
 		//ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
 
 		// 2. This plays a game in a level by the controller.
-		ArcadeMachine.runOneGame(game, level1, visuals, sampleRSController, recordActionsFile, seed, 0);
+		ArcadeMachine.runOneGame(game, level1, visuals, MyController, recordActionsFile, seed, 0);
 
 
 
