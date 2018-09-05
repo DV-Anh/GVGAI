@@ -17,9 +17,9 @@ public class Agent extends AbstractPlayer {
     private Individual[] pop,nexPop;
     int num_action;
     int popSize=4;
-    int depth=6;
+    int depth=4;
     int tournamentSize=2;
-    int generateNum=2;
+    int generateNum;
     Random gen;
    // WinScoreHeuristic heuristic;
     StateObservation stateObservation;
@@ -69,6 +69,13 @@ public class Agent extends AbstractPlayer {
     public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer)
     {
         actions=stateObs.getAvailableActions();
+        System.out.println(actions.size());
+        if (actions.size()>4)
+        {
+            generateNum=2;
+        }else {
+            generateNum=3;
+        }
      //   heuristic = new WinScoreHeuristic(stateObs);
         this.stateObservation=stateObs;
         this.gen=new Random();
