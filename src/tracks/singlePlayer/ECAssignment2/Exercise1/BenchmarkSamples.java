@@ -3,6 +3,9 @@ package tracks.singlePlayer.ECAssignment2.Exercise1;
 import tools.Utils;
 import tracks.ArcadeMachine;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class BenchmarkSamples {
@@ -38,10 +41,11 @@ public class BenchmarkSamples {
         System.out.println("game:" + gameName + ",controller:" + controller);
         for (int i = 0; i < 5; i++) {
             int seed = new Random().nextInt();
-            ArcadeMachine.runOneGame(
+            double[] res = ArcadeMachine.runOneGame(
                     game, level1,
                     visualising, controller,
                     recordActionsFile, seed, 0);
+            System.out.println(res[0] + "," + res[1] + "," + res[2]);
         }
     }
 }
