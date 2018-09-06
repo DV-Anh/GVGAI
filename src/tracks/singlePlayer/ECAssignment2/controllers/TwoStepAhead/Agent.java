@@ -13,6 +13,8 @@ import java.util.Random;
  */
 public class Agent extends AbstractPlayer {
     public double epsilon = 1e-6;
+    // 0 for 1 step ahead, 1 for two and so on
+    public int extraStep=2;
     public Random m_rnd;
     public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) {
         m_rnd = new Random();
@@ -36,13 +38,13 @@ public class Agent extends AbstractPlayer {
             // move according to searched action
             stCopy.advance(action);
             // prioritise winning and reject losing
-            if(stCopy.getGameWinner() == Types.WINNER.PLAYER_WINS){
-                return action;
-            }else if(stCopy.getGameWinner() == Types.WINNER.PLAYER_LOSES){
-                continue;
-            }
+//            if(stCopy.getGameWinner() == Types.WINNER.PLAYER_WINS){
+//                return action;
+//            }else if(stCopy.getGameWinner() == Types.WINNER.PLAYER_LOSES){
+//                continue;
+//            }
             // measure n successive action's value
-            double Q=act2(stCopy,heuristic,1);
+            double Q=act2(stCopy,heuristic,extraStep);
 
 
             //System.out.println("Action:" + action + " score:" + Q);
@@ -67,11 +69,11 @@ public class Agent extends AbstractPlayer {
             stCopy.advance(action);
 
             // prioritise winning and reject losing
-            if(stCopy.getGameWinner() == Types.WINNER.PLAYER_WINS){
-                return heuristic.evaluateState(stCopy);
-            }else if(stCopy.getGameWinner() == Types.WINNER.PLAYER_LOSES){
-                continue;
-            }
+//            if(stCopy.getGameWinner() == Types.WINNER.PLAYER_WINS){
+//                return heuristic.evaluateState(stCopy);
+//            }else if(stCopy.getGameWinner() == Types.WINNER.PLAYER_LOSES){
+//                continue;
+//            }
             double Q = act2(stCopy,heuristic,stepsLeft-1);
             Q = Utils.noise(Q, this.epsilon, this.m_rnd.nextDouble());
             //System.out.println("Action:" + action + " score:" + Q);
