@@ -1,13 +1,10 @@
-package tracks.singlePlayer.MyController;
+package tracks.singlePlayer.Group8Controller;
 
 import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
-import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
-import tracks.singlePlayer.tools.Heuristics.WinScoreHeuristic;
 
-import java.awt.image.CropImageFilter;
 import java.util.*;
 
 public class Agent extends AbstractPlayer {
@@ -17,7 +14,7 @@ public class Agent extends AbstractPlayer {
     private Individual[] pop,nexPop;
     int num_action;
     int popSize=4;
-    int depth=4;
+    int depth;
     int tournamentSize=2;
     int generateNum;
     Random gen;
@@ -69,12 +66,15 @@ public class Agent extends AbstractPlayer {
     public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer)
     {
         actions=stateObs.getAvailableActions();
-        System.out.println(actions.size());
+//        System.out.println(actions.size());
         if (actions.size()>4)
         {
             generateNum=2;
+            depth=3;
+
         }else {
-            generateNum=3;
+            generateNum=2;
+            depth=5;
         }
      //   heuristic = new WinScoreHeuristic(stateObs);
         this.stateObservation=stateObs;

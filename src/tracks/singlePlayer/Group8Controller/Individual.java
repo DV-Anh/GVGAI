@@ -1,12 +1,7 @@
-package tracks.singlePlayer.MyController;
-
-import core.game.StateObservation;
-import ontology.Types;
-import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
+package tracks.singlePlayer.Group8Controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Random;
 
 public class Individual {
