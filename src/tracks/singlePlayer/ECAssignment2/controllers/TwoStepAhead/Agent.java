@@ -5,6 +5,8 @@ import core.player.AbstractPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tools.Utils;
+import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
+
 import java.util.Random;
 /**
  *
@@ -33,9 +35,14 @@ public class Agent extends AbstractPlayer {
             StateObservation stCopy = stateObs.copy();
             // move according to searched action
             stCopy.advance(action);
-
-            // measure 2 successive action's value
-            double Q=act2(stCopy);
+            // prioritise winning and reject losing
+            if(stCopy.getGameWinner() == Types.WINNER.PLAYER_WINS){
+                return action;
+            }else if(stCopy.getGameWinner() == Types.WINNER.PLAYER_LOSES){
+                continue;
+            }
+            // measure n successive action's value
+            double Q=act2(stCopy,heuristic,1);
 
 
             //System.out.println("Action:" + action + " score:" + Q);
@@ -49,19 +56,23 @@ public class Agent extends AbstractPlayer {
     }
 
 
-    private double act2(StateObservation stateObs)
+    private double act2(StateObservation stateObs, StateHeuristic heuristic, int stepsLeft)
     {
+        if(stepsLeft==0)return heuristic.evaluateState(stateObs);
         double maxQ = Double.NEGATIVE_INFINITY;
-        SimpleStateHeuristic heuristic =  new SimpleStateHeuristic(stateObs);
         for (Types.ACTIONS action : stateObs.getAvailableActions())
         {
 
             StateObservation stCopy = stateObs.copy();
             stCopy.advance(action);
 
-
-
-            double Q = heuristic.evaluateState(stCopy);
+            // prioritise winning and reject losing
+            if(stCopy.getGameWinner() == Types.WINNER.PLAYER_WINS){
+                return heuristic.evaluateState(stCopy);
+            }else if(stCopy.getGameWinner() == Types.WINNER.PLAYER_LOSES){
+                continue;
+            }
+            double Q = act2(stCopy,heuristic,stepsLeft-1);
             Q = Utils.noise(Q, this.epsilon, this.m_rnd.nextDouble());
             //System.out.println("Action:" + action + " score:" + Q);
             if (Q > maxQ) {

@@ -21,7 +21,7 @@ public class Test {
 		String sampleOneStepController = "tracks.singlePlayer.simple.sampleonesteplookahead.Agent";
 		String sampleFlatMCTSController = "tracks.singlePlayer.simple.greedyTreeSearch.Agent";
         String sampleGAController = "tracks.singlePlayer.deprecated.sampleGA.Agent";
-
+		String twoAhead = "tracks.singlePlayer.ECAssignment2.controllers.TwoStepAhead.Agent";
 		String sampleMCTSController = "tracks.singlePlayer.advanced.sampleMCTS.Agent";
         String sampleRSController = "tracks.singlePlayer.advanced.sampleRS.Agent";
         String sampleRHEAController = "tracks.singlePlayer.advanced.sampleRHEA.Agent";
@@ -52,7 +52,7 @@ public class Test {
 		//ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
 
 		// 2. This plays a game in a level by the controller.
-		ArcadeMachine.runOneGame(game, level1, visuals, MyController, recordActionsFile, seed, 0);
+		//ArcadeMachine.runOneGame(game, level1, visuals, MyController, recordActionsFile, seed, 0);
 
 
 
@@ -61,20 +61,26 @@ public class Test {
 	//	 ArcadeMachine.replayGame(game, level1, visuals, readActionsFile);
 
 		// 4. This plays a single game, in N levels, M times :
-//		String level2 = new String(game).replace(gameName, gameName + "_lvl" + 1);
-//		int M = 5;
-//		for(int i=0; i<games.length; i++){
-//			if(i==0||i==11||i==13||i==18){
-//			    game = games[i][0];
-//			    gameName = games[i][1];
-//			    level1 = game.replace(gameName, gameName + "_lvl" + levelIdx);
-//				System.out.println(level1);
-//			    ArcadeMachine.runGames(game, new String[]{level1}, M, sampleOneStepController, null);
-//			}
-//		}
+		String level2 = new String(game).replace(gameName, gameName + "_lvl" + 1);
+		int M = 5;
+		for(int i=0; i<games.length; i++){
+			if(i==0||i==11||i==13||i==18){
+			    game = games[i][0];
+			    gameName = games[i][1];
+			    level1 = game.replace(gameName, gameName + "_lvl0");
+				System.out.println(level1);
+			    ArcadeMachine.runGames(game, new String[]{level1}, M, twoAhead, null);
+				level1 = game.replace(gameName, gameName + "_lvl1");
+				System.out.println(level1);
+				ArcadeMachine.runGames(game, new String[]{level1}, M, twoAhead, null);
+				level1 = game.replace(gameName, gameName + "_lvl2");
+				System.out.println(level1);
+				ArcadeMachine.runGames(game, new String[]{level1}, M, twoAhead, null);
+			}
+		}
 
 		//5. This plays N games, in the first L levels, M times each. Actions to file optional (set saveActions to true).
-//		int N = games.length, L = 2, M = 1;
+//		int N = games.length, L = 3, M = 5;
 //		boolean saveActions = false;
 //		String[] levels = new String[L];
 //		String[] actionFiles = new String[L*M];
@@ -88,7 +94,7 @@ public class Test {
 //				if(saveActions) for(int k = 0; k < M; ++k)
 //				actionFiles[actionIdx++] = "actions_game_" + i + "_level_" + j + "_" + k + ".txt";
 //			}
-//			ArcadeMachine.runGames(game, levels, M, sampleRHEAController, saveActions? actionFiles:null);
+//			ArcadeMachine.runGames(game, levels, M, sampleOneStepController, saveActions? actionFiles:null);
 //		}
 
 
