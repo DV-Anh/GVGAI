@@ -26,7 +26,7 @@ public class Test {
         String sampleRSController = "tracks.singlePlayer.advanced.sampleRS.Agent";
         String sampleRHEAController = "tracks.singlePlayer.advanced.sampleRHEA.Agent";
 		String sampleOLETSController = "tracks.singlePlayer.advanced.olets.Agent";
-		String MyController = "tracks.singlePlayer.MyController.Agent";
+		String MyController = "tracks.singlePlayer.Group8Controller.Agent";
 		String sampleGA="tracks.singlePlayer.deprecated.sampleGA.Agent";
 		//Load available games
 		String spGamesCollection =  "examples/all_games_sp.csv";
@@ -37,7 +37,7 @@ public class Test {
 		int seed = new Random().nextInt();
 
 		// Game and level to play
-		int gameIdx= 11;//aliens=0, boulderdash=11, butterflies=13, chase=18
+		int gameIdx= 13;//aliens=0, boulderdash=11, butterflies=13, chase=18
 		int levelIdx = 2; // level names from 0 to 4 (game_lvlN.txt).
 		String gameName = games[gameIdx][1];
 		String game = games[gameIdx][0];
