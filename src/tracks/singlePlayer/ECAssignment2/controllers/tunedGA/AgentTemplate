@@ -1,4 +1,4 @@
-package tracks.singlePlayer.ECAssignment2.controllers.sampleGA;
+package tracks.singlePlayer.ECAssignment2.controllers.tunedGA;
 
 import core.game.StateObservation;
 import core.player.AbstractPlayer;
@@ -22,12 +22,12 @@ import java.util.concurrent.TimeoutException;
  */
 public class Agent extends AbstractPlayer {
 
-    private static double GAMMA = 0.90;
+    private static double GAMMA = %.3f;   // should be between 0 and 1.0 included
     private static long BREAK_MS = 35;
-    private static int SIMULATION_DEPTH = 7;
-    private static int POPULATION_SIZE = 5;
+    private static int SIMULATION_DEPTH = %d;    // how abount 2 to 20
+    private static int POPULATION_SIZE = %d;    // 2 to 50
 
-    private static double RECPROB = 0.1;
+    private static double RECPROB = %.3f;    // Probability, should be between 0 and 1.0 included
     private double MUT = (1.0 / SIMULATION_DEPTH);
     private final int N_ACTIONS;
 
@@ -61,6 +61,8 @@ public class Agent extends AbstractPlayer {
 
         N_ACTIONS = stateObs.getAvailableActions().size();
         initGenome(stateObs);
+
+        System.out.println(GAMMA + "," + SIMULATION_DEPTH + "," + POPULATION_SIZE + "," + RECPROB);
 
     }
 

@@ -13,13 +13,15 @@ public class BenchmarkSamples {
     final static String[][] games = Utils.readGames("examples/all_games_sp.csv");
 
     public static void main(String[] args) {
+        String turnedga = "tracks.singlePlayer.ECAssignment2.controllers.tunedGA.Agent";
         String random = "tracks.singlePlayer.ECAssignment2.controllers.sampleRandom.Agent";
         String oneAhead = "tracks.singlePlayer.ECAssignment2.controllers.sampleOneStepAhead.Agent";
         String ga = "tracks.singlePlayer.ECAssignment2.controllers.sampleGA.Agent";
         String twoAhead = "tracks.singlePlayer.ECAssignment2.controllers.TwoStepAhead.Agent";
 
         int[] targets = new int[]{0, 11, 13, 18};
-        String[] controllers = new String[]{random, oneAhead, ga, twoAhead};
+        //String[] controllers = new String[]{random, oneAhead, ga, twoAhead};
+        String[] controllers = new String[]{turnedga};
 
         for (String controller : controllers) {
             for (int gameid : targets) {
