@@ -16,9 +16,10 @@ public class Agent extends AbstractPlayer {
     // 0 for 1 step ahead, 1 for two and so on
     public int extraStep=2;
     public int timeBudget=5;// in milliseconds
-    public Random m_rnd;
+    public StateHeuristic heuristic=new SimpleStateHeuristic(null);
+    public Random m_rnd = new Random();
     public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) {
-        m_rnd = new Random();
+
     }
     /**
      *
@@ -31,7 +32,6 @@ public class Agent extends AbstractPlayer {
     public Types.ACTIONS act(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) {
         Types.ACTIONS bestAction = null;
         double maxQ = Double.NEGATIVE_INFINITY;
-        StateHeuristic heuristic =  new SimpleStateHeuristic(stateObs);
         for (Types.ACTIONS action : stateObs.getAvailableActions())
         {
             if(elapsedTimer.remainingTimeMillis()<timeBudget)return bestAction;
@@ -45,7 +45,7 @@ public class Agent extends AbstractPlayer {
                 continue;
             }
             // measure n successive action's value
-            double Q= act_extra(stCopy,heuristic,extraStep,elapsedTimer);
+            double Q= act_extra(stCopy,extraStep,elapsedTimer);
 
 
             //System.out.println("Action:" + action + " score:" + Q);
@@ -59,7 +59,7 @@ public class Agent extends AbstractPlayer {
     }
 
 
-    private double act_extra(StateObservation stateObs, StateHeuristic heuristic, int stepsLeft, ElapsedCpuTimer elapsedTimer)
+    private double act_extra(StateObservation stateObs, int stepsLeft, ElapsedCpuTimer elapsedTimer)
     {
         if(stepsLeft==0||elapsedTimer.remainingTimeMillis()<timeBudget)return heuristic.evaluateState(stateObs);
         double maxQ = Double.NEGATIVE_INFINITY;
@@ -76,7 +76,7 @@ public class Agent extends AbstractPlayer {
             }else if(t == Types.WINNER.PLAYER_LOSES){
                 continue;
             }
-            double Q = act_extra(stCopy,heuristic,stepsLeft-1,elapsedTimer);
+            double Q = act_extra(stCopy,stepsLeft-1,elapsedTimer);
             Q = Utils.noise(Q, this.epsilon, this.m_rnd.nextDouble());
             //System.out.println("Action:" + action + " score:" + Q);
             if (Q > maxQ) {
