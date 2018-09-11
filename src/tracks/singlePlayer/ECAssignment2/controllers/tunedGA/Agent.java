@@ -5,6 +5,7 @@ import core.player.AbstractPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tools.Utils;
+import tracks.singlePlayer.ECAssignment2.Exercise2.HyperParamSet;
 import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
 import tracks.singlePlayer.tools.Heuristics.WinScoreHeuristic;
 
@@ -22,12 +23,12 @@ import java.util.concurrent.TimeoutException;
  */
 public class Agent extends AbstractPlayer {
 
-    private static double GAMMA = 0.900;   // should be between 0 and 1.0 included
-    private static long BREAK_MS = 35;
-    private static int SIMULATION_DEPTH = 10;    // how abount 2 to 20
-    private static int POPULATION_SIZE = 5;    // 2 to 50
+    private double GAMMA = 0.382;   // should be between 0 and 1.0 included
+    private long BREAK_MS = 35;
+    private int SIMULATION_DEPTH = 16;    // how abount 2 to 20
+    private int POPULATION_SIZE = 15;    // 2 to 50
 
-    private static double RECPROB = 0.100;    // Probability, should be between 0 and 1.0 included
+    private double RECPROB = 0.496;    // Probability, should be between 0 and 1.0 included
     private double MUT = (1.0 / SIMULATION_DEPTH);
     private final int N_ACTIONS;
 
@@ -42,11 +43,17 @@ public class Agent extends AbstractPlayer {
 
     /**
      * Public constructor with state observation and time due.
-     *
-     * @param stateObs     state observation of the current game.
+     *  @param stateObs     state observation of the current game.
      * @param elapsedTimer Timer for the controller creation.
+     * @param params
      */
-    public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) {
+    public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer, HyperParamSet params) {
+
+        GAMMA = params.gamma / 1000.0;
+        SIMULATION_DEPTH = params.simulationDepth;
+        POPULATION_SIZE = params.popSize;
+        RECPROB = params.recprob / 1000.0;
+        MUT = (1.0 / SIMULATION_DEPTH);
 
         randomGenerator = new Random();
 

@@ -3,9 +3,6 @@ package tracks.singlePlayer.ECAssignment2.Exercise1;
 import tools.Utils;
 import tracks.ArcadeMachine;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class BenchmarkSamples {
@@ -19,9 +16,10 @@ public class BenchmarkSamples {
         String ga = "tracks.singlePlayer.ECAssignment2.controllers.sampleGA.Agent";
         String twoAhead = "tracks.singlePlayer.ECAssignment2.controllers.TwoStepAhead.Agent";
 
-        int[] targets = new int[]{0, 11, 13, 18};
+//        int[] targets = new int[]{0, 11, 13, 18};
+        int[] targets = new int[]{0};
         //String[] controllers = new String[]{random, oneAhead, ga, twoAhead};
-        String[] controllers = new String[]{turnedga};
+        String[] controllers = new String[]{ga};
 
         for (String controller : controllers) {
             for (int gameid : targets) {
