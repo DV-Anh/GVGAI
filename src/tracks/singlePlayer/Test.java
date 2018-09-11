@@ -21,7 +21,7 @@ public class Test {
 		String sampleOneStepController = "tracks.singlePlayer.simple.sampleonesteplookahead.Agent";
 		String sampleFlatMCTSController = "tracks.singlePlayer.simple.greedyTreeSearch.Agent";
         String sampleGAController = "tracks.singlePlayer.deprecated.sampleGA.Agent";
-		String twoAhead = "tracks.singlePlayer.ECAssignment2.controllers.TwoStepAhead.Agent";
+		String twoAhead = "tracks.singlePlayer.ECAssignment2.controllers.MultiStepAhead.Agent";
 		String sampleMCTSController = "tracks.singlePlayer.advanced.sampleMCTS.Agent";
         String sampleRSController = "tracks.singlePlayer.advanced.sampleRS.Agent";
         String sampleRHEAController = "tracks.singlePlayer.advanced.sampleRHEA.Agent";
