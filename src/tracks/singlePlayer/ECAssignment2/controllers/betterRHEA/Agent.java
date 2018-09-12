@@ -2,7 +2,6 @@ package tracks.singlePlayer.ECAssignment2.controllers.betterRHEA;
 
 import java.util.*;
 
-import com.sun.org.apache.bcel.internal.generic.POP;
 import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
@@ -10,39 +9,35 @@ import tools.ElapsedCpuTimer;
 import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
 import tracks.singlePlayer.tools.Heuristics.WinScoreHeuristic;
 
-// IDEAS
-//      DONE
-//          Rollout
-//          Info Share
-//          Crossover/Mutate
-//      DOING
-//          Shift Pop
-//          Tournament
-
+import javax.print.attribute.standard.MediaSize;
 
 public class Agent extends AbstractPlayer {
 
     // HyperParameters
     enum UpdateType {RANDOM, SHIFT, ROTATE, TRANSSHIFT, TRANSROTATE}
-    private UpdateType UPDATETYPE = UpdateType.TRANSSHIFT;
-    private boolean INFOSHARE = true;
+    enum StatType {MEDIAN, AVERAGE}
+    private UpdateType UPDATETYPE = UpdateType.TRANSROTATE;
+    private StatType INFOTYPE = StatType.AVERAGE;
+    private boolean INFOSHARE = false;
+    private int INDIVIDUAL_DEPTH = 20;
     private int POPULATION_SIZE = 5;
-    private int INDIVIDUAL_DEPTH = 5;
+    private int ELITIST_SIZE = POPULATION_SIZE;
+    private int TOURNAMENT_SIZE = 1;
+    private double CROSSOVER_RATE = 0.50;
+    private double MUTATION_RATE = 0.05;
     private int SIMULATION_DEPTH = 0;
     private int SIMULATION_REPEATS = 0;
-    private int TOURNAMENT_SIZE = 2;
 
     // Class Globals
     private final long BREAK_MS = 5;
     private int NUM_ACTIONS;
-    private LinkedList<Individual> population;
-    private HashMap<Integer, Types.ACTIONS> action_mapping;
+    private ArrayList<Individual> population;
+    private ArrayList<Types.ACTIONS> action_mapping;
     private ElapsedCpuTimer timer;
     private Random randomGenerator;
     private StateHeuristic heuristic;
     private double acumTimeTakenEval,avgTimeTakenEval, avgTimeTaken, acumTimeTaken;
-    private int numEvals, numIters;
-    private boolean keepIterating;
+    private int numEvals, numIters, numAdvances;
     private long remaining;
     private int bestAction;
     private List<Double>[] infoShareList;
@@ -55,16 +50,19 @@ public class Agent extends AbstractPlayer {
 
         // Set up action mapping
         NUM_ACTIONS = stateObs.getAvailableActions().size()+1;
-        action_mapping = new HashMap<>();
+        action_mapping = new ArrayList<>();
         for (int i=0; i<NUM_ACTIONS-1; i++)
-            action_mapping.put(i, stateObs.getAvailableActions().get(i));
-        action_mapping.put(NUM_ACTIONS-1, Types.ACTIONS.ACTION_NIL);
+            action_mapping.add(stateObs.getAvailableActions().get(i));
+        action_mapping.add(Types.ACTIONS.ACTION_NIL);
 
         // Initialise an empty population
-        population=new LinkedList<>();
+        population=new ArrayList<>();
 
         // Set last frame best action to null action
         bestAction=NUM_ACTIONS-1;
+
+        // Use up the rest of the first frame time by evolving
+        act(stateObs, elapsedTimer);
     }
 
     // Action called for every frame
@@ -78,7 +76,7 @@ public class Agent extends AbstractPlayer {
         acumTimeTakenEval = 0;
         numIters = 0;
         remaining = timer.remainingTimeMillis();
-        keepIterating = true;
+        numAdvances=0;
 
         // Create InfoSharing List if it is being used
         if (INFOSHARE) {
@@ -87,14 +85,50 @@ public class Agent extends AbstractPlayer {
                 infoShareList[i]=new ArrayList<>();
         }
 
-        // Initialise population
-        init_pop(stateObs);
-        Collections.sort(population);
+        // Remove non elite population
+        while (population.size()>ELITIST_SIZE) population.remove(0);
 
-        // Run evolution
-        remaining = timer.remainingTimeMillis();
-        while (remaining > avgTimeTaken && remaining > BREAK_MS && keepIterating) {
-            runIteration(stateObs);
+
+        // Apply update rule to all existing population members
+        double remaining = timer.remainingTimeMillis();
+        for (Individual individual : population) {
+            if (remaining > avgTimeTakenEval && remaining > BREAK_MS) {
+                switch (UPDATETYPE) {
+                    case RANDOM: individual.randomise(); break;
+                    case SHIFT: individual.shift(); break;
+                    case ROTATE: individual.rotate(); break;
+                    case TRANSSHIFT: individual.transshift(bestAction); break;
+                    case TRANSROTATE: individual.transrotate(bestAction); break;
+                }
+                evaluate(individual, heuristic, stateObs);
+                remaining = timer.remainingTimeMillis();
+            }
+            else break;
+        }
+
+        // Add more new randomised population members if population is not full size
+        while (population.size() < POPULATION_SIZE) {
+            if (population.size() == 0 || remaining > avgTimeTakenEval && remaining > BREAK_MS) {
+                population.add(new Individual(INDIVIDUAL_DEPTH, NUM_ACTIONS));
+                population.get(population.size() - 1).randomise();
+                evaluate(population.get(population.size() - 1), heuristic, stateObs);
+                remaining = timer.remainingTimeMillis();
+            } else break;
+        }
+
+        // Run (n+1) elitist evolution
+        while (remaining > avgTimeTaken && remaining > BREAK_MS) {
+            ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
+            Individual individual = new Individual(INDIVIDUAL_DEPTH, NUM_ACTIONS);
+            Individual[] parent={population.get(tournament()),population.get(tournament())};
+            individual.crossmutation(parent,CROSSOVER_RATE,MUTATION_RATE);
+            evaluate(individual, heuristic, stateObs);
+            population.add(individual);
+            Collections.sort(population);
+            population.remove(0);
+            numIters++;
+            acumTimeTaken += (elapsedTimerIteration.elapsedMillis());
+            avgTimeTaken = acumTimeTaken / numIters;
             remaining = timer.remainingTimeMillis();
         }
 
@@ -102,21 +136,29 @@ public class Agent extends AbstractPlayer {
         if (INFOSHARE){
             // Find best action from infoShareList
             double bestValue=Double.NEGATIVE_INFINITY;
-            double value;
+            double value=0;
             for (int i=0; i<NUM_ACTIONS; i++) {
-                value=median(infoShareList[i]);
+                switch (INFOTYPE) {
+                    case MEDIAN: value=median(infoShareList[i]); break;
+                    case AVERAGE:value=average(infoShareList[i]); break;
+                }
                 if (value>bestValue){
                     bestValue=value;
                     bestAction=i;
                 }
             }
         }
-        else bestAction=population.get(0).actions.get(0);
+        else {
+        	Collections.sort(population);
+        	bestAction=population.get(population.size()-1).actions.get(0);
+        }
+        System.out.println("State advance calls: "+numAdvances);
         return action_mapping.get(bestAction);
     }
 
     // Evaluate individual using simulated rollouts
     private void evaluate(Individual individual, StateHeuristic heuristic, StateObservation state) {
+        boolean failed=false;
         individual.value=Double.NEGATIVE_INFINITY;
         List<Double> valueList = new ArrayList<>();
         ElapsedCpuTimer elapsedTimerIterationEval = new ElapsedCpuTimer();
@@ -128,48 +170,48 @@ public class Agent extends AbstractPlayer {
             if (!st.isGameOver()) {
                 ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
                 st.advance(action_mapping.get(individual.actions.get(i)));
+                numAdvances++;
                 runs++;
                 acum += elapsedTimerIteration.elapsedMillis();
                 avg = acum / runs;
                 remaining = timer.remainingTimeMillis();
                 if (remaining < 2*avg || remaining < BREAK_MS) {
-                    keepIterating=false;
+                    failed=true;
                     break;
                 }
-            } else {
-                break;
             }
+            else break;
         }
 
         // Simulate multiple runs of random moves after the individuals actions
         // a number of times, storing the values for each simulation run
         if (SIMULATION_REPEATS>0) {
             StateObservation backup_st = st.copy();
-            for (int j=0; j< SIMULATION_REPEATS && keepIterating; j++) {
+            for (int j=0; j< SIMULATION_REPEATS; j++) {
                 st = backup_st.copy();
                 for (int i = 0; i < SIMULATION_DEPTH; i++) {
                     if (!st.isGameOver()) {
                         ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
                         st.advance(action_mapping.get(randomGenerator.nextInt(NUM_ACTIONS)));
+                        numAdvances++;
                         runs++;
                         acum += elapsedTimerIteration.elapsedMillis();
                         avg = acum / runs;
                         remaining = timer.remainingTimeMillis();
                         if (remaining < 2 * avg || remaining < BREAK_MS) {
-                            keepIterating=false;
+                            failed=true;
                             break;
                         }
-                    } else {
-                        break;
+                    }
+                    else break;
                     }
                 }
                 valueList.add(heuristic.evaluateState(st));
             }
-        }
         else valueList.add(heuristic.evaluateState(st));
 
         // Find the value of this individual if all simulation iterations completed
-        if (keepIterating) {
+        if (!failed) {
             individual.value=median(valueList);
             if (INFOSHARE) infoShareList[individual.actions.get(0)].add(individual.value);
         }
@@ -179,6 +221,22 @@ public class Agent extends AbstractPlayer {
         acumTimeTakenEval += (elapsedTimerIterationEval.elapsedMillis());
         avgTimeTakenEval = acumTimeTakenEval / numEvals;
         remaining = timer.remainingTimeMillis();
+    }
+
+    // Tournament select an individual
+    private int tournament() {
+        // Return obvious results quickly
+        if (TOURNAMENT_SIZE<2) return randomGenerator.nextInt(population.size());
+        if (TOURNAMENT_SIZE>=POPULATION_SIZE) return 0;
+
+        // Use a fast probabalistic solution to determine who would be selected
+        int member_num=0;
+        double current_probability=TOURNAMENT_SIZE/POPULATION_SIZE;
+        while(randomGenerator.nextDouble()>current_probability){
+            member_num++;
+            current_probability=TOURNAMENT_SIZE/(POPULATION_SIZE-member_num);
+        }
+        return member_num;
     }
 
     // Find the median for a list of values giving an empty list a value of negative infinity
@@ -193,48 +251,11 @@ public class Agent extends AbstractPlayer {
         return value;
     }
 
-    // Update last frame's last population to be this frame's initial population
-    private void init_pop(StateObservation stateObs) {
-        double remaining = timer.remainingTimeMillis();
-
-        // Apply update rule to all existing population members
-        for (Individual individual : population) {
-            if (remaining > avgTimeTakenEval && remaining > BREAK_MS) {
-                switch (UPDATETYPE) {
-                    case RANDOM: individual.randomise(); break;
-                    case SHIFT: individual.shift(); break;
-                    case ROTATE: individual.rotate(); break;
-                    case TRANSSHIFT: individual.transshift(bestAction); break;
-                    case TRANSROTATE: individual.transrotate(bestAction); break;
-                }
-                evaluate(individual, heuristic, stateObs);
-            } else break;
-        }
-
-        // Add more new randomised population members if population is not full size yet
-        while (population.size() < POPULATION_SIZE) {
-            if (population.size() == 0 || remaining > avgTimeTakenEval && remaining > BREAK_MS) {
-                population.add(new Individual(INDIVIDUAL_DEPTH, NUM_ACTIONS));
-                population.get(population.size() - 1).randomise();
-                evaluate(population.get(population.size() - 1), heuristic, stateObs);
-                remaining = timer.remainingTimeMillis();
-            } else break;
-        }
+    // Find the average for a list of values giving an empty list a value of negative infinity
+    private double average(List<Double> valueList) {
+        if (valueList.size()==0) return Double.NEGATIVE_INFINITY;
+        double value=0;
+        for (double num : valueList) value+=num;
+        return value/valueList.size();
     }
-
-    // Tournament select an individual
-    private int tournament() {
-        if (TOURNAMENT_SIZE<2) return randomGenerator.nextInt(POPULATION_SIZE);
-        if (TOURNAMENT_SIZE>=POPULATION_SIZE) return 0;
-        int member_num=0;
-        double current_probability=TOURNAMENT_SIZE/POPULATION_SIZE;
-        while(randomGenerator.nextDouble()>current_probability){
-            member_num++;
-            current_probability=TOURNAMENT_SIZE/(POPULATION_SIZE-member_num);
-        }
-        return member_num;
-    }
-
-    // TODO: Perform evolutions on population
-    private void runIteration(StateObservation stateObs){}
 }
