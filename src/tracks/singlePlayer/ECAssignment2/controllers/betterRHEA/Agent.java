@@ -1,6 +1,8 @@
 package tracks.singlePlayer.ECAssignment2.controllers.betterRHEA;
 
 import java.util.*;
+
+import com.sun.org.apache.bcel.internal.generic.POP;
 import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
@@ -21,13 +23,14 @@ import tracks.singlePlayer.tools.Heuristics.WinScoreHeuristic;
 public class Agent extends AbstractPlayer {
 
     // HyperParameters
-    enum UpdateType{RANDOM, SHIFT, ROTATE, TRANSSHIFT, TRANSROTATE}
-    private UpdateType UPDATETYPE = UpdateType.RANDOM;
-    private boolean INFOSHARE = false;
-    private int POPULATION_SIZE = 10;
-    private int INDIVIDUAL_DEPTH = 10;
+    enum UpdateType {RANDOM, SHIFT, ROTATE, TRANSSHIFT, TRANSROTATE}
+    private UpdateType UPDATETYPE = UpdateType.TRANSSHIFT;
+    private boolean INFOSHARE = true;
+    private int POPULATION_SIZE = 5;
+    private int INDIVIDUAL_DEPTH = 5;
     private int SIMULATION_DEPTH = 0;
     private int SIMULATION_REPEATS = 0;
+    private int TOURNAMENT_SIZE = 2;
 
     // Class Globals
     private final long BREAK_MS = 5;
@@ -44,6 +47,7 @@ public class Agent extends AbstractPlayer {
     private int bestAction;
     private List<Double>[] infoShareList;
 
+    // Constructor called before first frame
     public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) {
         randomGenerator = new Random();
         heuristic = new WinScoreHeuristic(stateObs);
@@ -56,12 +60,14 @@ public class Agent extends AbstractPlayer {
             action_mapping.put(i, stateObs.getAvailableActions().get(i));
         action_mapping.put(NUM_ACTIONS-1, Types.ACTIONS.ACTION_NIL);
 
-        // Initialise a population with partially initiallised individuals
+        // Initialise an empty population
         population=new LinkedList<>();
-        for (int i=0; i<POPULATION_SIZE-1; i++)
-            population.add(new Individual(INDIVIDUAL_DEPTH, NUM_ACTIONS));
+
+        // Set last frame best action to null action
+        bestAction=NUM_ACTIONS-1;
     }
 
+    // Action called for every frame
     @Override
     public Types.ACTIONS act(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) {
         // Reset time keeping statistics
@@ -83,13 +89,14 @@ public class Agent extends AbstractPlayer {
 
         // Initialise population
         init_pop(stateObs);
+        Collections.sort(population);
 
-//        // Run evolution
-//        remaining = timer.remainingTimeMillis();
-//        while (remaining > avgTimeTaken && remaining > BREAK_MS && keepIterating) {
-//            runIteration(stateObs);
-//            remaining = timer.remainingTimeMillis();
-//        }
+        // Run evolution
+        remaining = timer.remainingTimeMillis();
+        while (remaining > avgTimeTaken && remaining > BREAK_MS && keepIterating) {
+            runIteration(stateObs);
+            remaining = timer.remainingTimeMillis();
+        }
 
         // Find and return best action
         if (INFOSHARE){
@@ -108,6 +115,7 @@ public class Agent extends AbstractPlayer {
         return action_mapping.get(bestAction);
     }
 
+    // Evaluate individual using simulated rollouts
     private void evaluate(Individual individual, StateHeuristic heuristic, StateObservation state) {
         individual.value=Double.NEGATIVE_INFINITY;
         List<Double> valueList = new ArrayList<>();
@@ -185,15 +193,48 @@ public class Agent extends AbstractPlayer {
         return value;
     }
 
+    // Update last frame's last population to be this frame's initial population
     private void init_pop(StateObservation stateObs) {
         double remaining = timer.remainingTimeMillis();
-        for (int i = 0; i < POPULATION_SIZE; i++) {
-            if (i == 0 || remaining > avgTimeTakenEval && remaining > BREAK_MS) {
-                population.get(i).randomise();
-                evaluate(population.get(i),heuristic,stateObs);
-                remaining = timer.remainingTimeMillis();
-            } else {break;}
+
+        // Apply update rule to all existing population members
+        for (Individual individual : population) {
+            if (remaining > avgTimeTakenEval && remaining > BREAK_MS) {
+                switch (UPDATETYPE) {
+                    case RANDOM: individual.randomise(); break;
+                    case SHIFT: individual.shift(); break;
+                    case ROTATE: individual.rotate(); break;
+                    case TRANSSHIFT: individual.transshift(bestAction); break;
+                    case TRANSROTATE: individual.transrotate(bestAction); break;
+                }
+                evaluate(individual, heuristic, stateObs);
+            } else break;
         }
-        Collections.sort(population);
+
+        // Add more new randomised population members if population is not full size yet
+        while (population.size() < POPULATION_SIZE) {
+            if (population.size() == 0 || remaining > avgTimeTakenEval && remaining > BREAK_MS) {
+                population.add(new Individual(INDIVIDUAL_DEPTH, NUM_ACTIONS));
+                population.get(population.size() - 1).randomise();
+                evaluate(population.get(population.size() - 1), heuristic, stateObs);
+                remaining = timer.remainingTimeMillis();
+            } else break;
+        }
     }
+
+    // Tournament select an individual
+    private int tournament() {
+        if (TOURNAMENT_SIZE<2) return randomGenerator.nextInt(POPULATION_SIZE);
+        if (TOURNAMENT_SIZE>=POPULATION_SIZE) return 0;
+        int member_num=0;
+        double current_probability=TOURNAMENT_SIZE/POPULATION_SIZE;
+        while(randomGenerator.nextDouble()>current_probability){
+            member_num++;
+            current_probability=TOURNAMENT_SIZE/(POPULATION_SIZE-member_num);
+        }
+        return member_num;
+    }
+
+    // TODO: Perform evolutions on population
+    private void runIteration(StateObservation stateObs){}
 }
