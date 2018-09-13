@@ -9,24 +9,25 @@ import tools.ElapsedCpuTimer;
 import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
 import tracks.singlePlayer.tools.Heuristics.WinScoreHeuristic;
 
-import javax.print.attribute.standard.MediaSize;
-
 public class Agent extends AbstractPlayer {
 
     // HyperParameters
-    enum UpdateType {RANDOM, SHIFT, ROTATE, TRANSSHIFT, TRANSROTATE}
-    enum StatType {MEDIAN, AVERAGE}
+    enum UpdateType {RANDOM, SHIFT, ROTATE, TRANSSHIFT, TRANSROTATE};
+    enum AverageType {MEDIAN, MEAN};
+    enum ShareType {NONE, ALL, POP};
     private UpdateType UPDATETYPE = UpdateType.TRANSROTATE;
-    private StatType INFOTYPE = StatType.AVERAGE;
-    private boolean INFOSHARE = false;
+    private AverageType INFOTYPE = AverageType.MEAN;
+    private ShareType INFOSHARE = ShareType.NONE;
     private int INDIVIDUAL_DEPTH = 20;
     private int POPULATION_SIZE = 5;
     private int ELITIST_SIZE = POPULATION_SIZE;
     private int TOURNAMENT_SIZE = 1;
     private double CROSSOVER_RATE = 0.50;
-    private double MUTATION_RATE = 0.05;
+    private double MUTATION_RATE = 0.10;
     private int SIMULATION_DEPTH = 0;
     private int SIMULATION_REPEATS = 0;
+    private AverageType SIMULATION_STAT=AverageType.MEAN;
+    private boolean PRESTART = false;
 
     // Class Globals
     private final long BREAK_MS = 5;
@@ -58,11 +59,8 @@ public class Agent extends AbstractPlayer {
         // Initialise an empty population
         population=new ArrayList<>();
 
-        // Set last frame best action to null action
-        bestAction=NUM_ACTIONS-1;
-
-        // Use up the rest of the first frame time by evolving
-        act(stateObs, elapsedTimer);
+        // If "prestarting", use up the rest of the first frame time by evolving population
+        if (PRESTART) act(stateObs, elapsedTimer);
     }
 
     // Action called for every frame
@@ -79,7 +77,7 @@ public class Agent extends AbstractPlayer {
         numAdvances=0;
 
         // Create InfoSharing List if it is being used
-        if (INFOSHARE) {
+        if (INFOSHARE==ShareType.ALL || INFOSHARE==ShareType.POP) {
             infoShareList = new List[NUM_ACTIONS];
             for (int i=0; i<NUM_ACTIONS; i++)
                 infoShareList[i]=new ArrayList<>();
@@ -106,7 +104,7 @@ public class Agent extends AbstractPlayer {
             else break;
         }
 
-        // Add more new randomised population members if population is not full size
+        // Add new randomised population members if population is not full size
         while (population.size() < POPULATION_SIZE) {
             if (population.size() == 0 || remaining > avgTimeTakenEval && remaining > BREAK_MS) {
                 population.add(new Individual(INDIVIDUAL_DEPTH, NUM_ACTIONS));
@@ -116,7 +114,7 @@ public class Agent extends AbstractPlayer {
             } else break;
         }
 
-        // Run (n+1) elitist evolution
+        // Run (n+1) elitist evolution until we run out of time
         while (remaining > avgTimeTaken && remaining > BREAK_MS) {
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
             Individual individual = new Individual(INDIVIDUAL_DEPTH, NUM_ACTIONS);
@@ -132,34 +130,38 @@ public class Agent extends AbstractPlayer {
             remaining = timer.remainingTimeMillis();
         }
 
-        // Find and return best action
-        if (INFOSHARE){
-            // Find best action from infoShareList
-            double bestValue=Double.NEGATIVE_INFINITY;
-            double value=0;
-            for (int i=0; i<NUM_ACTIONS; i++) {
-                switch (INFOTYPE) {
-                    case MEDIAN: value=median(infoShareList[i]); break;
-                    case AVERAGE:value=average(infoShareList[i]); break;
+        // Find the best action to return
+        switch (INFOSHARE) {
+            case POP:
+                for (Individual individual : population)
+                    infoShareList[individual.actions.get(0)].add(individual.value);
+                // POP deliberately has no break and falls through to case ALL
+            case ALL:
+                double bestValue=Double.NEGATIVE_INFINITY;
+                double value=0;
+                for (int i=0; i<NUM_ACTIONS; i++) {
+                    switch (INFOTYPE) {
+                        case MEDIAN: value=median(infoShareList[i]); break;
+                        case MEAN:value=average(infoShareList[i]); break;
+                    }
+                    if (value>bestValue){
+                        bestValue=value;
+                        bestAction=i;
+                    }
                 }
-                if (value>bestValue){
-                    bestValue=value;
-                    bestAction=i;
-                }
-            }
+                break;
+            case NONE:
+                Collections.sort(population);
+                bestAction=population.get(population.size()-1).actions.get(0);
+                break;
         }
-        else {
-        	Collections.sort(population);
-        	bestAction=population.get(population.size()-1).actions.get(0);
-        }
-        System.out.println("State advance calls: "+numAdvances);
+
+//        System.out.println("State advance calls: "+numAdvances);
         return action_mapping.get(bestAction);
     }
 
     // Evaluate individual using simulated rollouts
     private void evaluate(Individual individual, StateHeuristic heuristic, StateObservation state) {
-        boolean failed=false;
-        individual.value=Double.NEGATIVE_INFINITY;
         List<Double> valueList = new ArrayList<>();
         ElapsedCpuTimer elapsedTimerIterationEval = new ElapsedCpuTimer();
 
@@ -175,10 +177,7 @@ public class Agent extends AbstractPlayer {
                 acum += elapsedTimerIteration.elapsedMillis();
                 avg = acum / runs;
                 remaining = timer.remainingTimeMillis();
-                if (remaining < 2*avg || remaining < BREAK_MS) {
-                    failed=true;
-                    break;
-                }
+                if (remaining < 2*avg || remaining < BREAK_MS) break;
             }
             else break;
         }
@@ -198,10 +197,7 @@ public class Agent extends AbstractPlayer {
                         acum += elapsedTimerIteration.elapsedMillis();
                         avg = acum / runs;
                         remaining = timer.remainingTimeMillis();
-                        if (remaining < 2 * avg || remaining < BREAK_MS) {
-                            failed=true;
-                            break;
-                        }
+                        if (remaining < 2 * avg || remaining < BREAK_MS) break;
                     }
                     else break;
                     }
@@ -211,10 +207,11 @@ public class Agent extends AbstractPlayer {
         else valueList.add(heuristic.evaluateState(st));
 
         // Find the value of this individual if all simulation iterations completed
-        if (!failed) {
-            individual.value=median(valueList);
-            if (INFOSHARE) infoShareList[individual.actions.get(0)].add(individual.value);
+        switch(SIMULATION_STAT){
+            case MEAN: individual.value=average(valueList); break;
+            case MEDIAN: individual.value=median(valueList); break;
         }
+        if (INFOSHARE==ShareType.ALL) infoShareList[individual.actions.get(0)].add(individual.value);
 
         // Update evaluation time keeping statistics
         numEvals++;

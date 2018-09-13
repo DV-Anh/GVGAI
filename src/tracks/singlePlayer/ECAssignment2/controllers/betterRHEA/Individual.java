@@ -15,7 +15,7 @@ public class Individual implements Comparable {
         randomGenerator = new Random();
         this.size=size;
         this.num_actions=num_actions;
-        value=Double.NEGATIVE_INFINITY;
+        value=0;
     }
 
     // Define compareTo for sorting individuals in a population
