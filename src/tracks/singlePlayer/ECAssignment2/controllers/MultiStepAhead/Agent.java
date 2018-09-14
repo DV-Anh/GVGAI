@@ -7,6 +7,7 @@ import tools.ElapsedCpuTimer;
 import tools.Utils;
 import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
 
+import java.util.List;
 import java.util.Random;
 /**
  *
@@ -14,16 +15,17 @@ import java.util.Random;
 public class Agent extends AbstractPlayer {
     public double epsilon = 1e-6;
     // 0 for 1 step ahead, 1 for two and so on
-    public int extraStep=2;
-    public int timeBudget=5;// in milliseconds
+    public int extraStep=1;
+    public int timeBudget=2;// in milliseconds
+    public List<Types.ACTIONS> actions;
     public StateHeuristic heuristic=new SimpleStateHeuristic(null);
     public Random m_rnd = new Random();
     public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) {
-
+        actions=stateObs.getAvailableActions(false);
     }
     /**
      *
-     * two step look ahead
+     * multiple step look ahead
      *
      * @param stateObs Observation of the current state.
      * @param elapsedTimer Timer when the action returned is due.
@@ -31,9 +33,8 @@ public class Agent extends AbstractPlayer {
      */
     public Types.ACTIONS act(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) {
         Types.ACTIONS bestAction = null;
-        double maxQ = Double.NEGATIVE_INFINITY;
-        for (Types.ACTIONS action : stateObs.getAvailableActions())
-        {
+        double maxQ = Double.NEGATIVE_INFINITY,Q;
+        for (Types.ACTIONS action : actions){
             if(elapsedTimer.remainingTimeMillis()<timeBudget)return bestAction;
             StateObservation stCopy = stateObs.copy();
             // move according to searched action
@@ -43,12 +44,10 @@ public class Agent extends AbstractPlayer {
                 return action;
             }else if(t == Types.WINNER.PLAYER_LOSES){
                 continue;
+            }else {
+                // measure n successive action's value
+                Q = act_extra(stCopy, extraStep, elapsedTimer);
             }
-            // measure n successive action's value
-            double Q= act_extra(stCopy,extraStep,elapsedTimer);
-
-
-            //System.out.println("Action:" + action + " score:" + Q);
             if (Q > maxQ) {
                 maxQ = Q;
                 bestAction = action;
@@ -59,12 +58,11 @@ public class Agent extends AbstractPlayer {
     }
 
 
-    private double act_extra(StateObservation stateObs, int stepsLeft, ElapsedCpuTimer elapsedTimer)
-    {
-        if(stepsLeft==0||elapsedTimer.remainingTimeMillis()<timeBudget)return heuristic.evaluateState(stateObs);
-        double maxQ = Double.NEGATIVE_INFINITY;
-        for (Types.ACTIONS action : stateObs.getAvailableActions())
-        {
+    private double act_extra(StateObservation stateObs, int stepsLeft, ElapsedCpuTimer elapsedTimer){
+        if(stepsLeft==0||elapsedTimer.remainingTimeMillis()<timeBudget)
+            return Utils.noise(heuristic.evaluateState(stateObs), this.epsilon, this.m_rnd.nextDouble());
+        double maxQ = Double.NEGATIVE_INFINITY,Q;
+        for (Types.ACTIONS action : actions){
             if(elapsedTimer.remainingTimeMillis()<timeBudget)return maxQ;
             StateObservation stCopy = stateObs.copy();
             stCopy.advance(action);
@@ -72,13 +70,12 @@ public class Agent extends AbstractPlayer {
             // prioritise winning and reject losing
             Types.WINNER t = stCopy.getGameWinner();
             if(t == Types.WINNER.PLAYER_WINS){
-                return heuristic.evaluateState(stCopy);
+                return Utils.noise(heuristic.evaluateState(stCopy), this.epsilon, this.m_rnd.nextDouble());
             }else if(t == Types.WINNER.PLAYER_LOSES){
                 continue;
+            }else {
+                Q = act_extra(stCopy, stepsLeft - 1, elapsedTimer);
             }
-            double Q = act_extra(stCopy,stepsLeft-1,elapsedTimer);
-            Q = Utils.noise(Q, this.epsilon, this.m_rnd.nextDouble());
-            //System.out.println("Action:" + action + " score:" + Q);
             if (Q > maxQ) {
                 maxQ = Q;
             }
