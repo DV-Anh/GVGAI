@@ -26,7 +26,7 @@ public class Test {
         String sampleRSController = "tracks.singlePlayer.advanced.sampleRS.Agent";
         String sampleRHEAController = "tracks.singlePlayer.advanced.sampleRHEA.Agent";
 		String sampleOLETSController = "tracks.singlePlayer.advanced.olets.Agent";
-		String MyController = "tracks.singlePlayer.Group8Controller.Agent";
+		String MyController = "tracks.singlePlayer.ECAssignment2.controllers.Group8Controller.Agent";
 		String sampleGA="tracks.singlePlayer.deprecated.sampleGA.Agent";
 		String betterRHEAcontroller = "tracks.singlePlayer.ECAssignment2.controllers.betterRHEA.Agent";
 		//Load available games
