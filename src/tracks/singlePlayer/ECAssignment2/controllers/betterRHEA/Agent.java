@@ -6,8 +6,8 @@ import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
+import tracks.singlePlayer.tools.Heuristics.MyScoreHeuristic;
 import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
-import tracks.singlePlayer.tools.Heuristics.WinScoreHeuristic;
 
 public class Agent extends AbstractPlayer {
 
@@ -15,18 +15,20 @@ public class Agent extends AbstractPlayer {
     enum UpdateType {RANDOM, SHIFT, ROTATE, TRANSSHIFT, TRANSROTATE};
     enum AverageType {MEDIAN, MEAN};
     enum ShareType {NONE, ALL, POP};
-    private UpdateType UPDATETYPE = UpdateType.TRANSROTATE;
+    private UpdateType UPDATETYPE = UpdateType.TRANSSHIFT;
     private AverageType INFOTYPE = AverageType.MEAN;
-    private ShareType INFOSHARE = ShareType.NONE;
+    private ShareType INFOSHARE = ShareType.ALL;
     private int INDIVIDUAL_DEPTH = 20;
-    private int POPULATION_SIZE = 5;
+    private int POPULATION_SIZE = 2;
     private int ELITIST_SIZE = POPULATION_SIZE;
     private int TOURNAMENT_SIZE = 1;
     private double CROSSOVER_RATE = 0.50;
     private double MUTATION_RATE = 0.10;
-    private int SIMULATION_DEPTH = 0;
-    private int SIMULATION_REPEATS = 0;
-    private AverageType SIMULATION_STAT=AverageType.MEAN;
+//    private int SIMULATION_DEPTH = 0;
+//    private int SIMULATION_REPEATS = 0;
+//    private AverageType SIMULATION_STAT=AverageType.MEAN;
+    private double WIN_BONUS=0.1;
+    private double LOSE_PENALTY=1000000;
     private boolean PRESTART = false;
 
     // Class Globals
@@ -46,7 +48,7 @@ public class Agent extends AbstractPlayer {
     // Constructor called before first frame
     public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) {
         randomGenerator = new Random();
-        heuristic = new WinScoreHeuristic(stateObs);
+        heuristic = new MyScoreHeuristic(stateObs,WIN_BONUS,LOSE_PENALTY);
         this.timer = elapsedTimer;
 
         // Set up action mapping
@@ -139,7 +141,10 @@ public class Agent extends AbstractPlayer {
             case ALL:
                 double bestValue=Double.NEGATIVE_INFINITY;
                 double value=0;
-                for (int i=0; i<NUM_ACTIONS; i++) {
+                ArrayList<Integer> actionlist= new ArrayList<>();
+                for (int i=0; i<NUM_ACTIONS; i++) actionlist.add(i);
+                Collections.shuffle(actionlist);
+                for (int i : actionlist) {
                     switch (INFOTYPE) {
                         case MEDIAN: value=median(infoShareList[i]); break;
                         case MEAN:value=average(infoShareList[i]); break;
@@ -156,7 +161,7 @@ public class Agent extends AbstractPlayer {
                 break;
         }
 
-//        System.out.println("State advance calls: "+numAdvances);
+        System.out.println("State advance calls: "+numAdvances);
         return action_mapping.get(bestAction);
     }
 
@@ -177,40 +182,40 @@ public class Agent extends AbstractPlayer {
                 acum += elapsedTimerIteration.elapsedMillis();
                 avg = acum / runs;
                 remaining = timer.remainingTimeMillis();
-                if (remaining < 2*avg || remaining < BREAK_MS) break;
+                if (remaining < 12*avg || remaining < BREAK_MS) break;
             }
             else break;
         }
 
-        // Simulate multiple runs of random moves after the individuals actions
-        // a number of times, storing the values for each simulation run
-        if (SIMULATION_REPEATS>0) {
-            StateObservation backup_st = st.copy();
-            for (int j=0; j< SIMULATION_REPEATS; j++) {
-                st = backup_st.copy();
-                for (int i = 0; i < SIMULATION_DEPTH; i++) {
-                    if (!st.isGameOver()) {
-                        ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
-                        st.advance(action_mapping.get(randomGenerator.nextInt(NUM_ACTIONS)));
-                        numAdvances++;
-                        runs++;
-                        acum += elapsedTimerIteration.elapsedMillis();
-                        avg = acum / runs;
-                        remaining = timer.remainingTimeMillis();
-                        if (remaining < 2 * avg || remaining < BREAK_MS) break;
-                    }
-                    else break;
-                    }
-                }
-                valueList.add(heuristic.evaluateState(st));
-            }
-        else valueList.add(heuristic.evaluateState(st));
+//        // Simulate multiple runs of random moves after the individuals actions
+//        // a number of times, storing the values for each simulation run
+//        if (SIMULATION_REPEATS>0) {
+//            StateObservation backup_st = st.copy();
+//            for (int j=0; j< SIMULATION_REPEATS; j++) {
+//                st = backup_st.copy();
+//                for (int i = 0; i < SIMULATION_DEPTH; i++) {
+//                    if (!st.isGameOver()) {
+//                        ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
+//                        st.advance(action_mapping.get(randomGenerator.nextInt(NUM_ACTIONS)));
+//                        numAdvances++;
+//                        runs++;
+//                        acum += elapsedTimerIteration.elapsedMillis();
+//                        avg = acum / runs;
+//                        remaining = timer.remainingTimeMillis();
+//                        if (remaining < 2 * avg || remaining < BREAK_MS) break;
+//                    }
+//                    else break;
+//                    }
+//                }
+//                valueList.add(heuristic.evaluateState(st));
+//            }
+//        else valueList.add(heuristic.evaluateState(st));
+//        switch(SIMULATION_STAT){
+//            case MEAN: individual.value=average(valueList); break;
+//            case MEDIAN: individual.value=median(valueList); break;
+//        }
 
-        // Find the value of this individual if all simulation iterations completed
-        switch(SIMULATION_STAT){
-            case MEAN: individual.value=average(valueList); break;
-            case MEDIAN: individual.value=median(valueList); break;
-        }
+        individual.value=heuristic.evaluateState(st);
         if (INFOSHARE==ShareType.ALL) infoShareList[individual.actions.get(0)].add(individual.value);
 
         // Update evaluation time keeping statistics

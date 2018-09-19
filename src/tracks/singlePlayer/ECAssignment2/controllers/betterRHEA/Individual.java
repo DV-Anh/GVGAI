@@ -20,7 +20,11 @@ public class Individual implements Comparable {
 
     // Define compareTo for sorting individuals in a population
     @Override
-    public int compareTo(Object other) {return Double.compare(this.value,((Individual)other).value);}
+    public int compareTo(Object other) {
+        int comparison=Double.compare(this.value,((Individual)other).value);
+        if (comparison==0) comparison=randomGenerator.nextInt(2)*2-1;
+        return comparison;
+    }
 
     // Create a new action list with random actions
     public void randomise() {
