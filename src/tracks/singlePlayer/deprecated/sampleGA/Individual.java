@@ -1,4 +1,4 @@
-package tracks.singlePlayer.deprecated.sampleGA;
+/* package tracks.singlePlayer.deprecated.sampleGA;
 
 public class Individual {
 
@@ -31,4 +31,4 @@ public class Individual {
         return this.fitness;
     }
 
-}
+} */
