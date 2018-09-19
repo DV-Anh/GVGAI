@@ -1,4 +1,4 @@
-package tracks.singlePlayer.Group8Controller;
+package tracks.singlePlayer.ECAssignment2.controllers.Group8Controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
