@@ -28,7 +28,7 @@ public class Agent extends AbstractPlayer {
 //    private AverageType SIMULATION_STAT=AverageType.MEAN;
     private double WIN_BONUS=0.1;
     private double LOSE_PENALTY=1000000;
-    private boolean PRESTART = false;
+    private boolean PRESTART = true;
 
     // Class Globals
     private final long BREAK_MS = 5;
