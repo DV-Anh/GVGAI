@@ -1,4 +1,4 @@
-package tracks.singlePlayer.deprecated.sampleGA;
+/* package tracks.singlePlayer.deprecated.sampleGA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,3 +34,4 @@ public class MutationOperator {
     }
 
 }
+*/
