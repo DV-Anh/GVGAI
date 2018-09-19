@@ -1,7 +1,8 @@
-package tracks.singlePlayer.tools.Heuristics;
+package tracks.singlePlayer.ECAssignment2.controllers.betterRHEA;
 
 import core.game.StateObservation;
 import ontology.Types;
+import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
 
 /**
  * Created with IntelliJ IDEA.
