@@ -1,4 +1,4 @@
-package tracks.singlePlayer.deprecated.sampleGA;
+/* package tracks.singlePlayer.deprecated.sampleGA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,4 +103,4 @@ public class CrossoverOperator {
         list_i.add(i2);
         return list_i;
     }
-}
+} */
