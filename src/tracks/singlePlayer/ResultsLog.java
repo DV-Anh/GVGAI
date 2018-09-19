@@ -1,7 +1,8 @@
-package tracks.singlePlayer.ECAssignment2.Exercise2;
+package tracks.singlePlayer;
 
 import tools.Utils;
 import core.logging.Logger;
+import tracks.singlePlayer.ECAssignment2.Exercise2.ArcadeMachine;
 
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package tracks.singlePlayer.simple.sampletwosteplookahead;
+package tracks.singlePlayer.simple.sampleonesteplookahead;
 
 import tracks.singlePlayer.tools.Heuristics.SimpleStateHeuristic;
 import core.game.StateObservation;
