@@ -1,14 +1,5 @@
-package tracks;
+package tracks.singlePlayer.ECAssignment2.Exercise2;
 
-import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Random;
-
-import core.vgdl.VGDLFactory;
-import core.vgdl.VGDLParser;
-import core.vgdl.VGDLRegistry;
 import core.competition.CompetitionParameters;
 import core.game.Game;
 import core.game.StateObservation;
@@ -16,9 +7,19 @@ import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
 import core.player.AbstractPlayer;
 import core.player.Player;
+import core.vgdl.VGDLFactory;
+import core.vgdl.VGDLParser;
+import core.vgdl.VGDLRegistry;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tools.StatSummary;
+import tracks.singlePlayer.ECAssignment2.controllers.tunedGA.Agent;
+
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA. User: Diego Date: 06/11/13 Time: 11:24 This is a
@@ -38,7 +39,7 @@ public class ArcadeMachine {
     public static double[] playOneGame(String game_file, String level_file, String actionFile, int randomSeed) {
 		String agentName = "tracks.singlePlayer.tools.human.Agent";
 		boolean visuals = true;
-		return runOneGame(game_file, level_file, visuals, agentName, actionFile, randomSeed, 0);
+		return runOneGame(game_file, level_file, visuals, agentName, actionFile, randomSeed, 0, null);
     }
 
     /**
@@ -56,33 +57,32 @@ public class ArcadeMachine {
     public static double[] playOneGameMulti(String game_file, String level_file, String actionFile, int randomSeed) {
 		String agentName = "tracks.multiPlayer.tools.human.Agent";
 		boolean visuals = true;
-		return runOneGame(game_file, level_file, visuals, agentName, actionFile, randomSeed, 0);
+		return runOneGame(game_file, level_file, visuals, agentName, actionFile, randomSeed, 0, null);
     }
 
 
     /**
      * Reads and launches a game for a bot to be played. Graphics can be on or
      * off.
-     * 
-     * @param game_file
+     *  @param game_file
      *            game description file.
      * @param level_file
      *            file with the level to be played.
-     * @param visuals
-     *            true to show the graphics, false otherwise.
-     * @param agentNames
-     *            names (inc. package) where the tracks are otherwise.
-     *            Names separated by space.
-     * @param actionFile
-     *            filename of the files where the actions of these players, for
-     *            this game, should be recorded.
-     * @param randomSeed
-     *            sampleRandom seed for the sampleRandom generator.
-     * @param playerID
-     *            ID of the human player
-     */
+	 * @param visuals
+ *            true to show the graphics, false otherwise.
+	 * @param agentNames
+*            names (inc. package) where the tracks are otherwise.
+*            Names separated by space.
+	 * @param actionFile
+*            filename of the files where the actions of these players, for
+*            this game, should be recorded.
+	 * @param randomSeed
+*            sampleRandom seed for the sampleRandom generator.
+	 * @param playerID
+	 * @param params
+	 */
     public static double[] runOneGame(String game_file, String level_file, boolean visuals, String agentNames,
-	    String actionFile, int randomSeed, int playerID) {
+									  String actionFile, int randomSeed, int playerID, HyperParamSet params) {
 		VGDLFactory.GetInstance().init(); // This always first thing to do.
 		VGDLRegistry.GetInstance().init();
 
@@ -139,7 +139,7 @@ public class ArcadeMachine {
 			} else {
 			// single player
 			players[i] = ArcadeMachine.createPlayer(names[i], actionFile, toPlay.getObservation(), randomSeed,
-				humans[i]);
+				humans[i], params);
 			}
 
 			if (players[i] == null) {
@@ -234,7 +234,7 @@ public class ArcadeMachine {
 				false);
 			} else {
 			// single player
-			players[i] = ArcadeMachine.createPlayer(agentName, null, toPlay.getObservation(), -1, false);
+			players[i] = ArcadeMachine.createPlayer(agentName, null, toPlay.getObservation(), -1, false, null);
 			}
 
 			if (players[i] == null) {
@@ -457,7 +457,7 @@ public class ArcadeMachine {
 		    } else {
 			// single player
 			players[j] = ArcadeMachine.createPlayer(agentNames[j], filename, toPlay.getObservation(),
-				randomSeed, false);
+				randomSeed, false, null);
 		    }
 		    score[j] = -1;
 		    if (players[j] == null) {
@@ -539,12 +539,12 @@ public class ArcadeMachine {
      *         game.
      */
     public static AbstractPlayer createPlayer(String playerName, String actionFile, StateObservation so,
-	    int randomSeed, boolean isHuman) {
+	    int randomSeed, boolean isHuman, HyperParamSet params) {
         AbstractPlayer player = null;
 
         try {
             // create the controller.
-            player = (AbstractPlayer) createController(playerName, 0, so);
+            player = (AbstractPlayer) createController(playerName, 0, so, params);
             if (player != null)
             player.setup(actionFile, randomSeed, isHuman);
             // else System.out.println("No controller created.");
@@ -587,7 +587,7 @@ public class ArcadeMachine {
 
         try {
             // create the controller.
-            player = (AbstractMultiPlayer) createController(playerName, id, so);
+            player = (AbstractMultiPlayer) createController(playerName, id, so, null);
             if (player != null) {
             player.setup(actionFile, randomSeed, isHuman);
             }
@@ -614,7 +614,7 @@ public class ArcadeMachine {
      * @return the player if it could be created, null otherwise.
      */
 
-    protected static Player createController(String playerName, int playerID, StateObservation so)
+    protected static Player createController(String playerName, int playerID, StateObservation so, HyperParamSet params)
 	    throws RuntimeException {
         Player player = null;
         try {
@@ -626,15 +626,16 @@ public class ArcadeMachine {
             if (so.getNoPlayers() < 2) { // single player
 				// Get the class and the constructor with arguments
 				// (StateObservation, long).
-				Class<? extends AbstractPlayer> controllerClass = Class.forName(playerName)
-					.asSubclass(AbstractPlayer.class);
-				Class[] gameArgClass = new Class[] { StateObservation.class, ElapsedCpuTimer.class };
-				Constructor controllerArgsConstructor = controllerClass.getConstructor(gameArgClass);
-
-				// Call the constructor with the appropriate parameters.
-				Object[] constructorArgs = new Object[] { so, ect.copy() };
-
-				player = (AbstractPlayer) controllerArgsConstructor.newInstance(constructorArgs);
+//				Class<? extends AbstractPlayer> controllerClass = Class.forName(playerName)
+//					.asSubclass(AbstractPlayer.class);
+//				Class[] gameArgClass = new Class[] { StateObservation.class, ElapsedCpuTimer.class };
+//				Constructor controllerArgsConstructor = controllerClass.getConstructor(gameArgClass);
+//
+//				// Call the constructor with the appropriate parameters.
+//				Object[] constructorArgs = new Object[] { so, ect.copy() };
+//
+//				player = (AbstractPlayer) controllerArgsConstructor.newInstance(constructorArgs);
+				player = new Agent(so, ect.copy(), params);
 				player.setPlayerID(playerID);
 
             } else { // multi player

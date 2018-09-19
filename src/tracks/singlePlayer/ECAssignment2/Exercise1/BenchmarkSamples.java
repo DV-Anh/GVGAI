@@ -10,17 +10,20 @@ public class BenchmarkSamples {
     final static String[][] games = Utils.readGames("examples/all_games_sp.csv");
 
     public static void main(String[] args) {
+        String turnedga = "tracks.singlePlayer.ECAssignment2.controllers.tunedGA.Agent";
         String random = "tracks.singlePlayer.ECAssignment2.controllers.sampleRandom.Agent";
         String oneAhead = "tracks.singlePlayer.ECAssignment2.controllers.sampleOneStepAhead.Agent";
         String ga = "tracks.singlePlayer.ECAssignment2.controllers.sampleGA.Agent";
-        String multiAhead = "tracks.singlePlayer.ECAssignment2.controllers.MultiStepAhead.Agent";
+        String twoAhead = "tracks.singlePlayer.ECAssignment2.controllers.TwoStepAhead.Agent";
 
-        int[] targets = new int[]{0, 11, 13, 18};
-        String[] controllers = new String[]{multiAhead, random, oneAhead, ga};
+//        int[] targets = new int[]{0, 11, 13, 18};
+        int[] targets = new int[]{0};
+        //String[] controllers = new String[]{random, oneAhead, ga, twoAhead};
+        String[] controllers = new String[]{ga};
 
         for (String controller : controllers) {
             for (int gameid : targets) {
-                benchmark(gameid, controller, true);
+                benchmark(gameid, controller, false);
             }
         }
     }
@@ -38,10 +41,11 @@ public class BenchmarkSamples {
         System.out.println("game:" + gameName + ",controller:" + controller);
         for (int i = 0; i < 5; i++) {
             int seed = new Random().nextInt();
-            ArcadeMachine.runOneGame(
+            double[] res = ArcadeMachine.runOneGame(
                     game, level1,
                     visualising, controller,
                     recordActionsFile, seed, 0);
+            System.out.println(res[0] + "," + res[1] + "," + res[2]);
         }
     }
 }
