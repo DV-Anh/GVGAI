@@ -6,7 +6,6 @@ import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
-import tracks.singlePlayer.tools.Heuristics.MyScoreHeuristic;
 import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
 
 public class Agent extends AbstractPlayer {
