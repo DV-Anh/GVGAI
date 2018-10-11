@@ -26,10 +26,12 @@ public class HyperTuning {
     private final static String[][] games = Utils.readGames("examples/all_games_sp.csv");
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        System.out.println("Game 0: " + tuneGA(0));
+        //System.out.println("Game 0: " + tuneGA(0));
         //System.out.println("Game 11: " + tuneGA(11));
         //System.out.println("Game 13: " + tuneGA(13));
         //System.out.println("Game 18: " + tuneGA(18));
+        HyperParamSet params = new HyperParamSet(948, 11, 13, 409);
+        getFiveTimesScore(0, params);
     }
 
     private static HyperParamSet tuneGA(int gameID) throws IOException {
@@ -160,7 +162,7 @@ public class HyperTuning {
 
     private static double getFiveTimesScore(int gameID, HyperParamSet params) {
         // Play 5 times and get average score
-        int levelIdx = 0; // level names from 0 to 4 (game_lvlN.txt).
+        int levelIdx = 1; // level names from 0 to 4 (game_lvlN.txt).
         String gameName = games[gameID][1];
         String game = games[gameID][0];
         String level1 = game.replace(gameName, gameName + "_lvl" + levelIdx);
