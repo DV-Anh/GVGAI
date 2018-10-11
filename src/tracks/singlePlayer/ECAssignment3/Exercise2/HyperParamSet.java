@@ -1,4 +1,4 @@
-package tracks.singlePlayer.ECAssignment2.Exercise2;
+package tracks.singlePlayer.ECAssignment3.Exercise2;
 
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package tracks.singlePlayer.ECAssignment2.controllers.tunedGA;
+package tracks.singlePlayer.ECAssignment3.controllers.tunedGA;
 
 import core.game.StateObservation;
 import core.player.AbstractPlayer;

@@ -1,15 +1,10 @@
-package tracks.singlePlayer.ECAssignment2.controllers.sampleOneStepAhead;
+package tracks.singlePlayer.ECAssignment3.controllers.sampleOneStepAhead;
 
-import core.game.StateObservation;
-import core.player.AbstractPlayer;
 import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tracks.singlePlayer.tools.Heuristics.SimpleStateHeuristic;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 public class Agent extends AbstractPlayer {
 

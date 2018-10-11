@@ -1,4 +1,4 @@
-package tracks.singlePlayer.ECAssignment2.controllers.sampleRandom;
+package tracks.singlePlayer.ECAssignment3.controllers.sampleRandom;
 
 import core.game.StateObservation;
 import core.player.AbstractPlayer;

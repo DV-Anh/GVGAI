@@ -1,4 +1,4 @@
-package tracks.singlePlayer.ECAssignment2.Exercise2;
+package tracks.singlePlayer.ECAssignment3.Exercise2;
 
 import core.competition.CompetitionParameters;
 import core.game.Game;
@@ -13,7 +13,7 @@ import core.vgdl.VGDLRegistry;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tools.StatSummary;
-import tracks.singlePlayer.ECAssignment2.controllers.tunedGA.Agent;
+import tracks.singlePlayer.ECAssignment3.controllers.tunedGA.Agent;
 
 import java.io.*;
 import java.lang.reflect.Constructor;

@@ -1,4 +1,4 @@
-package tracks.singlePlayer.ECAssignment2.controllers.TwoStepAhead;
+package tracks.singlePlayer.ECAssignment3.controllers.TwoStepAhead;
 import tracks.singlePlayer.tools.Heuristics.SimpleStateHeuristic;
 import core.game.StateObservation;
 import core.player.AbstractPlayer;

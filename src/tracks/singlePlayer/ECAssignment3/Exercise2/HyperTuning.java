@@ -1,4 +1,4 @@
-package tracks.singlePlayer.ECAssignment2.Exercise2;
+package tracks.singlePlayer.ECAssignment3.Exercise2;
 
 import tools.Utils;
 
@@ -19,10 +19,10 @@ import java.util.*;
  * 7. Using code from the first assignment.
  */
 public class HyperTuning {
-    private final static String AGENT_TEMPLATE_PATH = "src/tracks/singlePlayer/ECAssignment2/controllers/tunedGA/AgentTemplate";
-    private final static String AGENT_PATH = "src/tracks/singlePlayer/ECAssignment2/controllers/tunedGA/Agent.java";
-    private final static String AGENT_CLASS_PATH = "out/production/gvgai/tracks/singlePlayer/ECAssignment2/controllers/tunedGA/Agent.class";
-    private final static String controller = "tracks.singlePlayer.ECAssignment2.controllers.tunedGA.Agent";
+    private final static String AGENT_TEMPLATE_PATH = "src/tracks/singlePlayer/ECAssignment3/controllers/tunedGA/AgentTemplate";
+    private final static String AGENT_PATH = "src/tracks/singlePlayer/ECAssignment3/controllers/tunedGA/Agent.java";
+    private final static String AGENT_CLASS_PATH = "out/production/gvgai/tracks/singlePlayer/ECAssignment3/controllers/tunedGA/Agent.class";
+    private final static String controller = "tracks.singlePlayer.ECAssignment3.controllers.tunedGA.Agent";
     private final static String[][] games = Utils.readGames("examples/all_games_sp.csv");
 
     public static void main(String[] args) throws IOException, InterruptedException {

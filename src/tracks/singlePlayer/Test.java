@@ -50,7 +50,7 @@ public class Test {
 		//ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
 
 		// 2. This plays a game in a level by the controller.
-		ArcadeMachine.runOneGame(game, level1, visuals, "tracks.singlePlayer.ECAssignment2.controllers.sampleGA.Agent", recordActionsFile, seed, 0);
+		ArcadeMachine.runOneGame(game, level1, visuals, "tracks.singlePlayer.ECAssignment3.controllers.sampleGA.Agent", recordActionsFile, seed, 0);
 
 
 
