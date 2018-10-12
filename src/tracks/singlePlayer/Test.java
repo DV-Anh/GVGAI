@@ -52,30 +52,33 @@ public class Test {
 //		ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
 
 		// 2. This plays a game in a level by the controller.
-		ArcadeMachine.runOneGame(game, level1, visuals, betterRHEAcontroller, recordActionsFile, seed, 0);
+//		ArcadeMachine.runOneGame(game, level1, visuals, betterRHEAcontroller, recordActionsFile, seed, 0);
 
 		// 3. This replays a game from an action file previously recorded
 	//	 String readActionsFile = recordActionsFile;
 	//	 ArcadeMachine.replayGame(game, level1, visuals, readActionsFile);
 
 		// 4. This plays a single game, in N levels, M times :
-//		String level2 = new String(game).replace(gameName, gameName + "_lvl" + 1);
-//		int M = 5;
-//		for(int i=0; i<games.length; i++){
-//			if(i==0||i==11||i==13||i==18){
-//			    game = games[i][0];
-//			    gameName = games[i][1];
-//			    level1 = game.replace(gameName, gameName + "_lvl0");
-//				System.out.println(level1);
-//			    ArcadeMachine.runGames(game, new String[]{level1}, M, twoAhead, null);
-//				level1 = game.replace(gameName, gameName + "_lvl1");
-//				System.out.println(level1);
-//				ArcadeMachine.runGames(game, new String[]{level1}, M, twoAhead, null);
-//				level1 = game.replace(gameName, gameName + "_lvl2");
-//				System.out.println(level1);
-//				ArcadeMachine.runGames(game, new String[]{level1}, M, twoAhead, null);
-//			}
-//		}
+		String level2 = new String(game).replace(gameName, gameName + "_lvl" + 1);
+		int M = 5;
+		for(int i=0; i<games.length; i++){
+			if(i==0||i==11||i==13||i==18){
+			    game = games[i][0];
+			    gameName = games[i][1];
+			    level1 = game.replace(gameName, gameName + "_lvl0");
+				System.out.println(level1);
+			    ArcadeMachine.runGames(game, new String[]{level1}, M, betterRHEAcontroller, null);
+				level1 = game.replace(gameName, gameName + "_lvl1");
+				System.out.println(level1);
+				ArcadeMachine.runGames(game, new String[]{level1}, M, betterRHEAcontroller, null);
+				level1 = game.replace(gameName, gameName + "_lvl2");
+				System.out.println(level1);
+				ArcadeMachine.runGames(game, new String[]{level1}, M, betterRHEAcontroller, null);
+				level1 = game.replace(gameName, gameName + "_lvl3");
+				System.out.println(level1);
+				ArcadeMachine.runGames(game, new String[]{level1}, M, betterRHEAcontroller, null);
+			}
+		}
 
 		//5. This plays N games, in the first L levels, M times each. Actions to file optional (set saveActions to true).
 //		int N = games.length, L = 3, M = 5;

@@ -4,7 +4,6 @@ import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
-
 import java.util.*;
 
 public class Agent extends AbstractPlayer {

@@ -11,7 +11,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/clients/GVGAI-JavaClient/src" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="10" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="org.uma.jmetal:jmetal-exec:5.5" level="project" />
+    <orderEntry type="library" exported="" name="org.uma.jmetal:jmetal-core:5.5" level="project" />
+    <orderEntry type="library" exported="" name="org.uma.jmetal:jmetal-problem:5.5" level="project" />
+    <orderEntry type="library" exported="" name="org.uma.jmetal:jmetal-algorithm:5.5" level="project" />
   </component>
 </module>
