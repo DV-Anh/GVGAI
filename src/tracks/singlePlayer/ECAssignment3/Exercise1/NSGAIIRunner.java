@@ -7,16 +7,13 @@ import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.IntegerSBXCrossover;
-import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.IntegerPolynomialMutation;
-import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.problem.Problem;
-import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.util.*;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
-import tracks.singlePlayer.ECAssignment3.Exercise2.BiProblem;
+import tracks.singlePlayer.ECAssignment3.Exercise2.MultiProblem;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -42,7 +39,7 @@ public class NSGAIIRunner extends AbstractAlgorithmRunner {
     SelectionOperator<List<IntegerSolution>, IntegerSolution> selection;
     String referenceParetoFront = "" ;
 
-    problem = new BiProblem(0, 11);
+    problem = new MultiProblem(new int[]{0, 11});
 
     double crossoverProbability = 0.9 ;
     double crossoverDistributionIndex = 20.0 ;

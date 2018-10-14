@@ -11,16 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class BiProblem extends AbstractIntegerProblem {
-    private int gameID1, gameID2;
+public class MultiProblem extends AbstractIntegerProblem {
+    private int[] gameIDs;
     private final static String[][] games = Utils.readGames("examples/all_games_sp.csv");
     private final static String controller = "tracks.singlePlayer.ECAssignment3.controllers.tunedGA.Agent";
 
-    public BiProblem(int g1, int g2)  {
+    public MultiProblem(int[] gs)  {
         setNumberOfVariables(4);
         setNumberOfObjectives(2);
-        gameID1 = g1;
-        gameID2 = g2;
+        gameIDs = new int[gs.length];
+        for (int i = 0; i < gs.length; i++) gameIDs[i] = gs[i];
 
         List<Integer> lower = new ArrayList<>();
         List<Integer> upper = new ArrayList<>();
@@ -40,8 +40,8 @@ public class BiProblem extends AbstractIntegerProblem {
         int recprob = solution.getVariableValue(3);
 
         HyperParamSet params = new HyperParamSet(gamma, depth, popSize, recprob);
-        solution.setObjective(0, fitness(gameID1, params));
-        solution.setObjective(1, fitness(gameID2, params));
+        for (int i = 0; i < gameIDs.length; i++)
+            solution.setObjective(i, fitness(gameIDs[i], params));
     }
 
     private static double fitness(int gameID, HyperParamSet params) {
