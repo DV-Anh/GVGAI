@@ -1,4 +1,4 @@
-package tracks.singlePlayer.ECAssignment2.controllers.betterRHEA;
+package tracks.singlePlayer.ECAssignment3.controllers.betterRHEA;
 
 import org.uma.jmetal.problem.DoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;

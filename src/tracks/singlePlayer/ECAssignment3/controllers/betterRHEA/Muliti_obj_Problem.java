@@ -1,10 +1,9 @@
-package tracks.singlePlayer.ECAssignment2.controllers.betterRHEA;
+package tracks.singlePlayer.ECAssignment3.controllers.betterRHEA;
 
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import tools.Utils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -12,7 +11,7 @@ import java.util.Random;
 public class Muliti_obj_Problem extends AbstractDoubleProblem {
     int numberOfVariables;
     int numberOfObjectives;
-    private final static String controller = "tracks.singlePlayer.ECAssignment2.controllers.betterRHEA.Agent";
+    private final static String controller = "tracks.singlePlayer.ECAssignment3.controllers.betterRHEA.Agent";
     private final static String[][] games = Utils.readGames("examples/all_games_sp.csv");
 
     public Muliti_obj_Problem()
@@ -90,11 +89,13 @@ public class Muliti_obj_Problem extends AbstractDoubleProblem {
     @Override
     public void evaluate(DoubleSolution solution) {
         System.out.println("Solution "+solution);
+//        //evaluate individual
+//        System.out.println("0: "+solution.getVariableValue(0));
 
         HyperParamSet param=new HyperParamSet(solution.getVariableValue(0),solution.getVariableValue(1),solution.getVariableValue(2),
                 solution.getVariableValue(3),solution.getVariableValue(4),solution.getVariableValue(5),solution.getVariableValue(6));
 
-        int runGameTime=5;
+        int runGameTime=1;
         double[] Objectives = new double[this.getNumberOfObjectives()];
         //Maximun score, need add new objective: win!
         Objectives[0]=80;//al
@@ -115,7 +116,7 @@ public class Muliti_obj_Problem extends AbstractDoubleProblem {
 
 
     private  double getScore(int gameID, HyperParamSet params, int runGameTime) {
-        // Play 5 times and get average score
+        // Play and get average score
         int levelIdx = 0; // level names from 0 to 4 (game_lvlN.txt).
         String gameName = games[gameID][1];
         String game = games[gameID][0];
@@ -129,7 +130,7 @@ public class Muliti_obj_Problem extends AbstractDoubleProblem {
                     game, level1,
                     false, controller,
                     null, seed, 0, params);
-            System.out.println("www"+res[0] + "," + res[1] + "," + res[2]);
+            System.out.println(" "+res[0] + "," + res[1] + "," + res[2]);
             ttl += res[1];
         }
 //        System.out.println(ttl / runGameTime);

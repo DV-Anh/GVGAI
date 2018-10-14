@@ -1,12 +1,15 @@
-package tracks.singlePlayer.ECAssignment2.controllers.betterRHEA;
-
-import java.util.*;
+package tracks.singlePlayer.ECAssignment3.controllers.betterRHEA;
 
 import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class Agent extends AbstractPlayer {
 
@@ -124,7 +127,7 @@ public class Agent extends AbstractPlayer {
         numAdvances=0;
 
         // Create InfoSharing List if it is being used
-        if (INFOSHARE==ShareType.ALL || INFOSHARE==ShareType.POP) {
+        if (INFOSHARE== ShareType.ALL || INFOSHARE== ShareType.POP) {
             infoShareList = new List[NUM_ACTIONS];
             for (int i=0; i<NUM_ACTIONS; i++)
                 infoShareList[i]=new ArrayList<>();
@@ -261,7 +264,7 @@ public class Agent extends AbstractPlayer {
 //        }
 
         individual.value=heuristic.evaluateState(st);
-        if (INFOSHARE==ShareType.ALL) infoShareList[individual.actions.get(0)].add(individual.value);
+        if (INFOSHARE== ShareType.ALL) infoShareList[individual.actions.get(0)].add(individual.value);
 
         // Update evaluation time keeping statistics
         numEvals++;
