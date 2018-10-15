@@ -62,33 +62,7 @@ public class Agent extends AbstractPlayer {
      *     private double WIN_BONUS=0.1;             5
      *     private double LOSE_PENALTY=1000000;      6
      */
-    public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer, HyperParamSet paramSet) {
-        randomGenerator = new Random();
-        heuristic = new MyScoreHeuristic(stateObs,WIN_BONUS,LOSE_PENALTY);
-        this.timer = elapsedTimer;
 
-        this.INDIVIDUAL_DEPTH = paramSet.INDIVIDUAL_DEPTH;
-        this.POPULATION_SIZE = paramSet.POPULATION_SIZE;
-        this.TOURNAMENT_SIZE = paramSet.TOURNAMENT_SIZE;
-        this.CROSSOVER_RATE = paramSet.CROSSOVER_RATE;
-        this.MUTATION_RATE = paramSet.MUTATION_RATE;
-        this.WIN_BONUS=paramSet.WIN_BONUS;
-        this.LOSE_PENALTY=paramSet.LOSE_PENALTY;
-
-
-        // Set up action mapping
-        NUM_ACTIONS = stateObs.getAvailableActions().size()+1;
-        action_mapping = new ArrayList<>();
-        for (int i=0; i<NUM_ACTIONS-1; i++)
-            action_mapping.add(stateObs.getAvailableActions().get(i));
-        action_mapping.add(Types.ACTIONS.ACTION_NIL);
-
-        // Initialise an empty population
-        population=new ArrayList<>();
-
-        // If "prestarting", use up the rest of the first frame time by evolving population
-        if (PRESTART) act(stateObs, elapsedTimer);
-    }
 
     // Constructor called before first frame
     public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) {

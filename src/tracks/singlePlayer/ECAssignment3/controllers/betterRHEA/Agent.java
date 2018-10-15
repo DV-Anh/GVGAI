@@ -30,11 +30,11 @@ public class Agent extends AbstractPlayer {
     private int ELITIST_SIZE = POPULATION_SIZE;
 
     private int TOURNAMENT_SIZE = 1;
-    private double CROSSOVER_RATE = 0.92;
-    private double MUTATION_RATE = 0.19;
+    private int CROSSOVER_RATE = 92;
+    private int MUTATION_RATE = 19;
 
-    private double WIN_BONUS=5940.57;
-    private double LOSE_PENALTY=8433.01;
+    private int WIN_BONUS=5940;
+    private int LOSE_PENALTY=8433;
 
 //    private int SIMULATION_DEPTH = 0;
 //    private int SIMULATION_REPEATS = 0;
@@ -67,7 +67,7 @@ public class Agent extends AbstractPlayer {
      */
     public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer, HyperParamSet paramSet) {
         randomGenerator = new Random();
-        heuristic = new MyScoreHeuristic(stateObs,WIN_BONUS,LOSE_PENALTY);
+        heuristic = new MyScoreHeuristic(stateObs,(float)WIN_BONUS,(float)LOSE_PENALTY);
         this.timer = elapsedTimer;
 
         this.INDIVIDUAL_DEPTH = paramSet.INDIVIDUAL_DEPTH;
@@ -169,7 +169,7 @@ public class Agent extends AbstractPlayer {
             ElapsedCpuTimer elapsedTimerIteration = new ElapsedCpuTimer();
             Individual individual = new Individual(INDIVIDUAL_DEPTH, NUM_ACTIONS);
             Individual[] parent={population.get(tournament()),population.get(tournament())};
-            individual.crossmutation(parent,CROSSOVER_RATE,MUTATION_RATE);
+            individual.crossmutation(parent,(float)CROSSOVER_RATE/100.0,(float)MUTATION_RATE/100.0);
             evaluate(individual, heuristic, stateObs);
             population.add(individual);
             Collections.sort(population);

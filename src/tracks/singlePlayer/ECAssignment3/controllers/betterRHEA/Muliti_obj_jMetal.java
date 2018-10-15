@@ -5,11 +5,11 @@ import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
-import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
-import org.uma.jmetal.operator.impl.mutation.SimpleRandomMutation;
+import org.uma.jmetal.operator.impl.crossover.IntegerSBXCrossover;
+import org.uma.jmetal.operator.impl.mutation.IntegerPolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.problem.Problem;
-import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
@@ -23,27 +23,27 @@ import static org.uma.jmetal.util.AbstractAlgorithmRunner.printQualityIndicators
 public class Muliti_obj_jMetal {
     public static void main(String[] arg0) throws FileNotFoundException
     {
-        Problem<DoubleSolution> problem;
-        Algorithm<List<DoubleSolution>> algorithm;
-        CrossoverOperator<DoubleSolution> crossover;
-        MutationOperator<DoubleSolution> mutation;
-        SelectionOperator<List<DoubleSolution>,DoubleSolution> selection;
+        Problem<IntegerSolution> problem;
+        Algorithm<List<IntegerSolution>> algorithm;
+        CrossoverOperator<IntegerSolution> crossover;
+        MutationOperator<IntegerSolution> mutation;
+        SelectionOperator<List<IntegerSolution>,IntegerSolution> selection;
         String referenceParetoFront="";
         problem=new Muliti_obj_Problem();
-        double crossoverProbability = 0.9;
-        double crossoverDistributionIndex = 20.0;
-        crossover=new SBXCrossover(crossoverProbability,crossoverDistributionIndex);
-        double mutationProbability = 1.0 / problem.getNumberOfVariables();
-        mutation = new SimpleRandomMutation(mutationProbability);
-        selection = new BinaryTournamentSelection<DoubleSolution>(
-                new RankingAndCrowdingDistanceComparator<DoubleSolution>());
-        algorithm = new NSGAIIBuilder<DoubleSolution>(problem, crossover, mutation)
+        double crossoverProbability = 0.8;
+        double DistributionIndex = 20.0;
+        crossover = new IntegerSBXCrossover(crossoverProbability, DistributionIndex);
+        double mutationProbability = 0.5;
+        mutation = new IntegerPolynomialMutation(mutationProbability,DistributionIndex);
+        selection = new BinaryTournamentSelection<>(
+                new RankingAndCrowdingDistanceComparator<>());
+        algorithm = new NSGAIIBuilder<IntegerSolution>(problem, crossover, mutation)
                 .setSelectionOperator(selection)
                 .setMaxEvaluations(20)
                 .setPopulationSize(2)
                 .build();
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm).execute();
-        List<DoubleSolution> population = algorithm.getResult();
+        List<IntegerSolution> population = algorithm.getResult();
         long computingTime = algorithmRunner.getComputingTime();
         JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
         printFinalSolutionSet(population);

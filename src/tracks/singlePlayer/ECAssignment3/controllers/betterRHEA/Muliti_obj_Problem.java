@@ -1,14 +1,15 @@
 package tracks.singlePlayer.ECAssignment3.controllers.betterRHEA;
 
-import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
+import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.solution.IntegerSolution;
 import tools.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Muliti_obj_Problem extends AbstractDoubleProblem {
+public class Muliti_obj_Problem extends AbstractIntegerProblem {
     int numberOfVariables;
     int numberOfObjectives;
     private final static String controller = "tracks.singlePlayer.ECAssignment3.controllers.betterRHEA.Agent";
@@ -23,8 +24,8 @@ public class Muliti_obj_Problem extends AbstractDoubleProblem {
     {
         setNumberOfVariables(numberOfVariables);
         setNumberOfObjectives(numberOfObjectives);
-        List<Double> lowerLimit = new ArrayList<>(getNumberOfVariables()) ;
-        List<Double> upperLimit = new ArrayList<>(getNumberOfVariables()) ;
+        List<Integer> lowerLimit = new ArrayList<>(getNumberOfVariables()) ;
+        List<Integer> upperLimit = new ArrayList<>(getNumberOfVariables()) ;
         //Domain
         /**
          *     private int INDIVIDUAL_DEPTH = 20;        0
@@ -39,28 +40,28 @@ public class Muliti_obj_Problem extends AbstractDoubleProblem {
         {
             if (i==0)
             {
-                lowerLimit.add(0.0);
-                upperLimit.add(30.0);
+                lowerLimit.add(0);
+                upperLimit.add(30);
             }
             if(i==1)
             {
-                lowerLimit.add(3.0);
-                upperLimit.add(10.0);
+                lowerLimit.add(3);
+                upperLimit.add(10);
             }
             if(i==2)
             {
-                lowerLimit.add(1.0);
-                upperLimit.add(3.0);
+                lowerLimit.add(1);
+                upperLimit.add(3);
             }
             if (i==3||i==4)
             {
-                lowerLimit.add(0.0);
-                upperLimit.add(1.0);
+                lowerLimit.add(0);
+                upperLimit.add(1);
             }
             if (i==5||i==6)
             {
-                lowerLimit.add(0.0);
-                upperLimit.add(10000.0);
+                lowerLimit.add(0);
+                upperLimit.add(10000);
             }
 
         }
@@ -87,10 +88,8 @@ public class Muliti_obj_Problem extends AbstractDoubleProblem {
     }
 
     @Override
-    public void evaluate(DoubleSolution solution) {
+    public void evaluate(IntegerSolution solution) {
         System.out.println("Solution "+solution);
-//        //evaluate individual
-//        System.out.println("0: "+solution.getVariableValue(0));
 
         HyperParamSet param=new HyperParamSet(solution.getVariableValue(0),solution.getVariableValue(1),solution.getVariableValue(2),
                 solution.getVariableValue(3),solution.getVariableValue(4),solution.getVariableValue(5),solution.getVariableValue(6));
@@ -104,15 +103,13 @@ public class Muliti_obj_Problem extends AbstractDoubleProblem {
         Objectives[0]=getScore(0,param,runGameTime)+3;
         Objectives[1]=getScore(13,param,runGameTime)+3;
         Objectives[2]=getScore(18,param,runGameTime)+3;
-
-
         solution.setObjective(0, Objectives[0]);
         solution.setObjective(1, Objectives[1]);
         solution.setObjective(2, Objectives[2]);
 
-
-
     }
+
+
 
 
     private  double getScore(int gameID, HyperParamSet params, int runGameTime) {
