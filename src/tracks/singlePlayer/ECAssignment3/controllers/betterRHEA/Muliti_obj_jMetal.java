@@ -36,11 +36,11 @@ public class Muliti_obj_jMetal {
         double mutationProbability = 0.5;
         mutation = new IntegerPolynomialMutation(mutationProbability,DistributionIndex);
         selection = new BinaryTournamentSelection<>(
-                new RankingAndCrowdingDistanceComparator<>());
+                new RankingAndCrowdingDistanceComparator<IntegerSolution>());
         algorithm = new NSGAIIBuilder<IntegerSolution>(problem, crossover, mutation)
                 .setSelectionOperator(selection)
-                .setMaxEvaluations(20)
-                .setPopulationSize(2)
+                .setMaxEvaluations(12)//100/10=10 generation
+                .setPopulationSize(4)
                 .build();
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm).execute();
         List<IntegerSolution> population = algorithm.getResult();

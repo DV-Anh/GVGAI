@@ -3,6 +3,8 @@ package tracks.singlePlayer.ECAssignment3.controllers.betterRHEA;
 import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.IntegerSolution;
+import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
+import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import tools.Utils;
 
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
 
     public Muliti_obj_Problem()
     {
-        this(7,3);
+        this(7,4);
     }
 
     public Muliti_obj_Problem(int numberOfVariables,int numberOfObjectives)
@@ -68,7 +70,6 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
         setLowerLimit(lowerLimit);
         setUpperLimit(upperLimit);
 
-
     }
 
     public void setNumberOfVariables(int numberOfVariables) {
@@ -87,6 +88,8 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
         return numberOfObjectives;
     }
 
+
+
     @Override
     public void evaluate(IntegerSolution solution) {
         System.out.println("Solution "+solution);
@@ -97,22 +100,18 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
         int runGameTime=1;
         double[] Objectives = new double[this.getNumberOfObjectives()];
         //Maximun score, need add new objective: win!
-        Objectives[0]=80;//al
-        Objectives[1]=80;//butt
-        Objectives[2]=15;//bo
-        Objectives[0]=getScore(0,param,runGameTime)+3;
-        Objectives[1]=getScore(13,param,runGameTime)+3;
-        Objectives[2]=getScore(18,param,runGameTime)+3;
-        solution.setObjective(0, Objectives[0]);
-        solution.setObjective(1, Objectives[1]);
-        solution.setObjective(2, Objectives[2]);
+//        int[] games=new int[]{0,11,13,18};
+        int[] games=new int[]{0,11,13,18};
+        for (int i = 0; i < games.length; i++)
+            solution.setObjective(i, getNTimesScore(games[i],param,runGameTime));
+//            solution.setObjective(i, 50);
 
     }
 
 
 
 
-    private  double getScore(int gameID, HyperParamSet params, int runGameTime) {
+    private  double getNTimesScore(int gameID, HyperParamSet params, int runGameTime) {
         // Play and get average score
         int levelIdx = 0; // level names from 0 to 4 (game_lvlN.txt).
         String gameName = games[gameID][1];
@@ -130,7 +129,6 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
             System.out.println(" "+res[0] + "," + res[1] + "," + res[2]);
             ttl += res[1];
         }
-//        System.out.println(ttl / runGameTime);
         return ttl / runGameTime;
     }
 }
