@@ -27,11 +27,11 @@ public class Agent extends AbstractPlayer {
     private int TOURNAMENT_SIZE = 1;
 
 
-    private int INDIVIDUAL_DEPTH = 20;
-    private int CROSSOVER_RATE = 92;
-    private int MUTATION_RATE = 19;
-    private int WIN_BONUS=5940;
-    private int LOSE_PENALTY=8433;
+    private int INDIVIDUAL_DEPTH = 28;
+    private int CROSSOVER_RATE = 45;
+    private int MUTATION_RATE = 18;
+    private int WIN_BONUS=3450;
+    private int LOSE_PENALTY=897;
 
 //    private int SIMULATION_DEPTH = 0;
 //    private int SIMULATION_REPEATS = 0;
