@@ -19,11 +19,12 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
 
     public Muliti_obj_Problem()
     {
-        this(7,4);
+        this(5,3);
     }
 
     public Muliti_obj_Problem(int numberOfVariables,int numberOfObjectives)
     {
+        setName("betterRHEA");
         setNumberOfVariables(numberOfVariables);
         setNumberOfObjectives(numberOfObjectives);
         List<Integer> lowerLimit = new ArrayList<>(getNumberOfVariables()) ;
@@ -31,12 +32,10 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
         //Domain
         /**
          *     private int INDIVIDUAL_DEPTH = 20;        0
-         *     private int POPULATION_SIZE = 2;          1
-         *     private int TOURNAMENT_SIZE = 1;          2
-         *     private double CROSSOVER_RATE = 0.50;     3
-         *     private double MUTATION_RATE = 0.10;      4
-         *     private double WIN_BONUS=0.1;             5
-         *     private double LOSE_PENALTY=1000000;      6
+         *     private double CROSSOVER_RATE = 0.50;     1
+         *     private double MUTATION_RATE = 0.10;      2
+         *     private double WIN_BONUS=0.1;             3
+         *     private double LOSE_PENALTY=1000000;      4
          */
         for (int i = 0; i < getNumberOfVariables(); i++)
         {
@@ -45,22 +44,13 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
                 lowerLimit.add(0);
                 upperLimit.add(30);
             }
-            if(i==1)
-            {
-                lowerLimit.add(3);
-                upperLimit.add(10);
-            }
-            if(i==2)
-            {
-                lowerLimit.add(1);
-                upperLimit.add(3);
-            }
-            if (i==3||i==4)
+
+            if (i==1||i==2)
             {
                 lowerLimit.add(0);
-                upperLimit.add(1);
+                upperLimit.add(100);
             }
-            if (i==5||i==6)
+            if (i==3||i==4)
             {
                 lowerLimit.add(0);
                 upperLimit.add(10000);
@@ -94,17 +84,16 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
     public void evaluate(IntegerSolution solution) {
         System.out.println("Solution "+solution);
 
-        HyperParamSet param=new HyperParamSet(solution.getVariableValue(0),solution.getVariableValue(1),solution.getVariableValue(2),
-                solution.getVariableValue(3),solution.getVariableValue(4),solution.getVariableValue(5),solution.getVariableValue(6));
+        HyperParamSet param=new HyperParamSet(solution.getVariableValue(0),
+                solution.getVariableValue(1),solution.getVariableValue(2),solution.getVariableValue(3),solution.getVariableValue(4));
 
         int runGameTime=1;
         double[] Objectives = new double[this.getNumberOfObjectives()];
         //Maximun score, need add new objective: win!
 //        int[] games=new int[]{0,11,13,18};
-        int[] games=new int[]{0,11,13,18};
+        int[] games=new int[]{0,11,13};
         for (int i = 0; i < games.length; i++)
             solution.setObjective(i, getNTimesScore(games[i],param,runGameTime));
-//            solution.setObjective(i, 50);
 
     }
 

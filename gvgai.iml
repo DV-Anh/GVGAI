@@ -28,7 +28,9 @@
           <root url="jar://$MODULE_DIR$/lib/jmetal-core-5.5.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.ideaLibSources/jmetal-core-5.5-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
@@ -40,5 +42,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" exported="" name="commons-io:commons-io:2.6" level="project" />
   </component>
 </module>

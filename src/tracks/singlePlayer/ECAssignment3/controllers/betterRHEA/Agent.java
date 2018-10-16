@@ -6,14 +6,10 @@ import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tracks.singlePlayer.tools.Heuristics.StateHeuristic;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
 
 public class Agent extends AbstractPlayer {
-
-
 
     // HyperParameters
     enum UpdateType {RANDOM, SHIFT, ROTATE, TRANSSHIFT, TRANSROTATE};
@@ -24,15 +20,16 @@ public class Agent extends AbstractPlayer {
     private ShareType INFOSHARE = ShareType.ALL;
 
 
-    private int INDIVIDUAL_DEPTH = 20;
-    private int POPULATION_SIZE = 9;
+    private int POPULATION_SIZE = 2;
 
     private int ELITIST_SIZE = POPULATION_SIZE;
 
     private int TOURNAMENT_SIZE = 1;
+
+
+    private int INDIVIDUAL_DEPTH = 20;
     private int CROSSOVER_RATE = 92;
     private int MUTATION_RATE = 19;
-
     private int WIN_BONUS=5940;
     private int LOSE_PENALTY=8433;
 
@@ -71,8 +68,6 @@ public class Agent extends AbstractPlayer {
         this.timer = elapsedTimer;
 
         this.INDIVIDUAL_DEPTH = paramSet.INDIVIDUAL_DEPTH;
-        this.POPULATION_SIZE = paramSet.POPULATION_SIZE;
-        this.TOURNAMENT_SIZE = paramSet.TOURNAMENT_SIZE;
         this.CROSSOVER_RATE = paramSet.CROSSOVER_RATE;
         this.MUTATION_RATE = paramSet.MUTATION_RATE;
         this.WIN_BONUS=paramSet.WIN_BONUS;
