@@ -45,16 +45,19 @@ public class MultiProblem extends AbstractIntegerProblem {
     }
 
     private static double fitness(int gameID, HyperParamSet params) {
-        return getNTimesScore(gameID, params, 1);
+        return getNTimesScore(gameID, params, 5);
     }
 
     private static double getNTimesScore(int gameID, HyperParamSet params, int n) {
         // Play 5 times and get average score
-        int levelIdx = 1; // level names from 0 to 4 (game_lvlN.txt).
+        int levelIdx = 0; // level names from 0 to 4 (game_lvlN.txt).
         String gameName = games[gameID][1];
         String game = games[gameID][0];
-        String level1 = game.replace(gameName, gameName + "_lvl" + levelIdx);
-        String recordActionsFile = null;// "actions_" + games[gameIdx] + "_lvl"
+        String level0 = game.replace(gameName, gameName + "_lvl0");
+        String level1 = game.replace(gameName, gameName + "_lvl1");
+        String level2 = game.replace(gameName, gameName + "_lvl2");
+        String level3 = game.replace(gameName, gameName + "_lvl3");
+        String level4 = game.replace(gameName, gameName + "_lvl4");
 
         double ttl = 0.0;
         for (int i = 0; i < n; i++) {
@@ -63,10 +66,29 @@ public class MultiProblem extends AbstractIntegerProblem {
                     game, level1,
                     false, controller,
                     null, seed, 0, params);
-            System.out.println(res[0] + "," + res[1] + "," + res[2]);
+            ttl += res[1];
+            res = ArcadeMachine.runOneGame(
+                    game, level2,
+                    false, controller,
+                    null, seed, 0, params);
+            ttl += res[1];
+            res = ArcadeMachine.runOneGame(
+                    game, level3,
+                    false, controller,
+                    null, seed, 0, params);
+            ttl += res[1];
+            res = ArcadeMachine.runOneGame(
+                    game, level4,
+                    false, controller,
+                    null, seed, 0, params);
+            ttl += res[1];
+            res = ArcadeMachine.runOneGame(
+                    game, level0,
+                    false, controller,
+                    null, seed, 0, params);
             ttl += res[1];
         }
-        return ttl / 5;
+        return ttl / n;
     }
 
 }

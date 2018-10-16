@@ -39,7 +39,7 @@ public class NSGAIIRunner extends AbstractAlgorithmRunner {
     SelectionOperator<List<IntegerSolution>, IntegerSolution> selection;
     String referenceParetoFront = "" ;
 
-    problem = new MultiProblem(new int[]{0, 11});
+    problem = new MultiProblem(new int[]{0, 13});//{0,18} {13,18} {0,13,18}
 
     double crossoverProbability = 0.9 ;
     double crossoverDistributionIndex = 20.0 ;
@@ -54,7 +54,7 @@ public class NSGAIIRunner extends AbstractAlgorithmRunner {
 
     algorithm = new NSGAIIBuilder<IntegerSolution>(problem, crossover, mutation)
         .setSelectionOperator(selection)
-        .setMaxEvaluations(10)
+        .setMaxEvaluations(100)
         .setPopulationSize(10)
         .build() ;
 
