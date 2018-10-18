@@ -1,28 +1,24 @@
 package tracks.singlePlayer.ECAssignment3.Exercise3;
 
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
-import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
 import org.uma.jmetal.solution.DoubleSolution;
-import org.uma.jmetal.solution.IntegerSolution;
 import tools.Utils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-// This version is for HyperREHA. Lower, upper should be updated for each controller!
-
-public class BiProblem extends AbstractDoubleProblem {
-    private int gameID1, gameID2;
+public class TriProblem extends AbstractDoubleProblem {
+    private int gameID1, gameID2, gameID3;
     private final static String[][] games = Utils.readGames("examples/all_games_sp.csv");
     private final static String controller = "tracks.singlePlayer.ECAssignment3.controllers.hyperRHEATune.Agent";
 
-    public BiProblem(int g1, int g2)  {
+    public TriProblem(int g1, int g2, int g3)  {
         setNumberOfVariables(5);
-        setNumberOfObjectives(2);
+        setNumberOfObjectives(3);
         gameID1 = g1;
         gameID2 = g2;
+        gameID3 = g3;
 
 //        POWER_FACTOR=1;      // Range {0,inf}
 //        GROWTH_LIN=1;        // Range {0,inf}
@@ -51,6 +47,7 @@ public class BiProblem extends AbstractDoubleProblem {
         HyperParamSet params = new HyperParamSet(pow_factor, grth_lin, grth_quad, shrk_frame, shrk_imp);
         solution.setObjective(0, fitness(gameID1, params));
         solution.setObjective(1, fitness(gameID2, params));
+        solution.setObjective(2, fitness(gameID3, params));
     }
 
     private static double fitness(int gameID, HyperParamSet params) {
