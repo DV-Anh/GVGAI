@@ -54,7 +54,7 @@ public class BiProblem extends AbstractDoubleProblem {
     }
 
     private static double fitness(int gameID, HyperParamSet params) {
-        return getNTimesScore(gameID, params, 1);
+        return Math.max(1/getNTimesScore(gameID, params, 1),0.000000000001) ;
     }
 
     private static double getNTimesScore(int gameID, HyperParamSet params, int n) {
@@ -75,7 +75,7 @@ public class BiProblem extends AbstractDoubleProblem {
             System.out.println(res[0] + "," + res[1] + "," + res[2]);
             ttl += res[1];
         }
-        return ttl / 5;
+        return ttl / n;
     }
 
 }

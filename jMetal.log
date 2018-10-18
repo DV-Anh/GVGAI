@@ -2,8 +2,9 @@
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
 <record>
-  <date>2018-10-18T13:36:27</date>
-  <millis>1539831987683</millis>
+  <date>2018-10-18T03:25:09.359356Z</date>
+  <millis>1539833109359</millis>
+  <nanos>356000</nanos>
   <sequence>0</sequence>
   <logger>org.uma.jmetal.util.JMetalLogger</logger>
   <level>INFO</level>
@@ -13,30 +14,33 @@
   <message>Loggers configured with null</message>
 </record>
 <record>
-  <date>2018-10-18T13:36:27</date>
-  <millis>1539831987708</millis>
+  <date>2018-10-18T03:25:09.416694Z</date>
+  <millis>1539833109416</millis>
+  <nanos>694000</nanos>
   <sequence>1</sequence>
   <logger>org.uma.jmetal.util.JMetalLogger</logger>
   <level>INFO</level>
   <class>tracks.singlePlayer.ECAssignment3.Exercise3.NSGAIIRunner</class>
   <method>main</method>
   <thread>1</thread>
-  <message>Total execution time: 259004ms</message>
+  <message>Total execution time: 289495ms</message>
 </record>
 <record>
-  <date>2018-10-18T13:36:27</date>
-  <millis>1539831987711</millis>
+  <date>2018-10-18T03:25:09.420312Z</date>
+  <millis>1539833109420</millis>
+  <nanos>312000</nanos>
   <sequence>2</sequence>
   <logger>org.uma.jmetal.util.JMetalLogger</logger>
   <level>INFO</level>
   <class>org.uma.jmetal.util.AbstractAlgorithmRunner</class>
   <method>printFinalSolutionSet</method>
   <thread>1</thread>
-  <message>Random seed: 1539831728676</message>
+  <message>Random seed: 1539832819850</message>
 </record>
 <record>
-  <date>2018-10-18T13:36:27</date>
-  <millis>1539831987712</millis>
+  <date>2018-10-18T03:25:09.421186Z</date>
+  <millis>1539833109421</millis>
+  <nanos>186000</nanos>
   <sequence>3</sequence>
   <logger>org.uma.jmetal.util.JMetalLogger</logger>
   <level>INFO</level>
@@ -46,8 +50,9 @@
   <message>Objectives values have been written to file FUN.tsv</message>
 </record>
 <record>
-  <date>2018-10-18T13:36:27</date>
-  <millis>1539831987713</millis>
+  <date>2018-10-18T03:25:09.421909Z</date>
+  <millis>1539833109421</millis>
+  <nanos>909000</nanos>
   <sequence>4</sequence>
   <logger>org.uma.jmetal.util.JMetalLogger</logger>
   <level>INFO</level>
