@@ -29,7 +29,7 @@ public class ArcadeMachine {
 
     /**
      * Reads and launches a game for a human to be played. Graphics always on.
-     * 
+     *
      * @param game_file
      *            game description file.
      * @param level_file
@@ -43,7 +43,7 @@ public class ArcadeMachine {
 
     /**
      * Reads and launches a game for a human to be played. Graphics always on.
-     * 
+     *
      * @param game_file
      *            game description file.
      * @param level_file
@@ -63,7 +63,7 @@ public class ArcadeMachine {
     /**
      * Reads and launches a game for a bot to be played. Graphics can be on or
      * off.
-     * 
+     *
      * @param game_file
      *            game description file.
      * @param level_file
@@ -182,7 +182,7 @@ public class ArcadeMachine {
 
     /**
      * Runs a replay given a game, level and file with the actions to execute.
-     * 
+     *
      * @param game_file
      *            game description file.
      * @param level_file
@@ -383,7 +383,7 @@ public class ArcadeMachine {
      * Reads and launches a game for a bot to be played. It specifies which
      * levels to play and how many times. Filenames for saving actions can be
      * specified. Graphics always off.
-     * 
+     *
      * @param game_file   game description file.
      * @param level_files  array of level file names to play.
      * @param level_times   how many times each level has to be played.
@@ -522,7 +522,7 @@ public class ArcadeMachine {
      * Creates a player given its name with package. This class calls the
      * constructor of the agent and initializes the action recording procedure.
      * PlayerID used is 0, default for single player games.
-     * 
+     *
      * @param playerName
      *            name of the agent to create. It must be of the type
      *            "<agentPackage>.Agent".
@@ -565,7 +565,7 @@ public class ArcadeMachine {
      * Creates a player given its name with package for multiplayer. This class
      * calls the constructor of the agent and initializes the action recording
      * procedure. PlayerID used is 0, default for single player games.
-     * 
+     *
      * @param playerName
      *            name of the agent to create. It must be of the type
      *            "<agentPackage>.Agent".
@@ -606,7 +606,7 @@ public class ArcadeMachine {
      * Creates and initializes a new controller with the given name. Takes into
      * account the initialization time, calling the appropriate constructor with
      * the state observation and time due parameters.
-     * 
+     *
      * @param playerName
      *            Name of the controller to instantiate.
      * @param so
@@ -702,7 +702,7 @@ public class ArcadeMachine {
      * This methods takes the game and warms it up. This allows Java to finish
      * the runtime compilation process and optimize the code before the proper
      * game starts.
-     * 
+     *
      * @param toPlay
      *            game to be warmed up.
      * @param howLong
@@ -818,7 +818,7 @@ public class ArcadeMachine {
     /**
      * Tears the player down. This initiates the saving of actions to file. It
      * should be called when the game played is over.
-     * 
+     *
      * @param toPlay
      *            game played.
      * @param players

@@ -1,4 +1,4 @@
-package tracks.singlePlayer.ECAssignment3.controllers.betterRHEA;
+package tracks.singlePlayer.ECAssignment3.Exercise3.first_Version;
 
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder;
@@ -14,14 +14,13 @@ import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 
-
 import java.io.FileNotFoundException;
 import java.util.List;
 
 import static org.uma.jmetal.util.AbstractAlgorithmRunner.printFinalSolutionSet;
 import static org.uma.jmetal.util.AbstractAlgorithmRunner.printQualityIndicators;
 
-public class Muliti_obj_jMetal {
+public class Muliti_obj_jMetal_Runner {
     public static void main(String[] arg0) throws FileNotFoundException
     {
         Problem<IntegerSolution> problem;
@@ -40,7 +39,7 @@ public class Muliti_obj_jMetal {
                 new RankingAndCrowdingDistanceComparator<IntegerSolution>());
         algorithm = new NSGAIIBuilder<IntegerSolution>(problem, crossover, mutation)
                 .setSelectionOperator(selection)
-                .setMaxEvaluations(100)//100/10=10 generation
+                .setMaxEvaluations(60)//100/10=10 generation
                 .setPopulationSize(10)
                 .build();
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm).execute();

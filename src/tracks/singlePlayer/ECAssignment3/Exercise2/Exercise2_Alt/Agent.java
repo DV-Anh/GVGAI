@@ -47,7 +47,7 @@ public class Agent extends AbstractPlayer {
      * @param stateObs     state observation of the current game.
      * @param elapsedTimer Timer for the controller creation.
      */
-    public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer, double[] solution) 
+    public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer, double[] solution)
     {
     	GAMMA=solution[0];
     	SIMULATION_DEPTH=(int)solution[1];
@@ -71,9 +71,9 @@ public class Agent extends AbstractPlayer {
 
 
     }
-    
-    public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer) 
-    {    	
+
+    public Agent(StateObservation stateObs, ElapsedCpuTimer elapsedTimer)
+    {
         randomGenerator = new Random();
 
         action_mapping = new HashMap<Integer, Types.ACTIONS>();

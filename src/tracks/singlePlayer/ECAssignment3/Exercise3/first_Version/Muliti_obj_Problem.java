@@ -1,11 +1,10 @@
-package tracks.singlePlayer.ECAssignment3.controllers.betterRHEA;
+package tracks.singlePlayer.ECAssignment3.Exercise3.first_Version;
 
 import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
-import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.IntegerSolution;
-import org.uma.jmetal.util.solutionattribute.impl.NumberOfViolatedConstraints;
-import org.uma.jmetal.util.solutionattribute.impl.OverallConstraintViolation;
 import tools.Utils;
+import tracks.singlePlayer.ECAssignment3.controllers.betterRHEA.ArcadeMachine;
+import tracks.singlePlayer.ECAssignment3.controllers.betterRHEA.HyperParamSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +90,7 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
         double[] Objectives = new double[this.getNumberOfObjectives()];
         //Maximun score, need add new objective: win!
 //        int[] games=new int[]{0,11,13,18};
-        int[] games=new int[]{0,11,13};
+        int[] games=new int[]{0,13,18};//(0,13) (0,18),(13,18)
         for (int i = 0; i < games.length; i++)
             solution.setObjective(i, getNTimesScore(games[i],param,runGameTime));
 
@@ -109,6 +108,7 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
         String recordActionsFile = null;// "actions_" + games[gameIdx] + "_lvl"
 
         double ttl = 0.0;
+        double ttl_step = 0.0;
         for (int i = 0; i < runGameTime; i++) {
             int seed = new Random().nextInt();
             double[] res = ArcadeMachine.runOneGame(
@@ -117,7 +117,9 @@ public class Muliti_obj_Problem extends AbstractIntegerProblem {
                     null, seed, 0, params);
             System.out.println(" "+res[0] + "," + res[1] + "," + res[2]);
             ttl += res[1];
+            ttl_step+=res[2];
         }
-        return ttl / runGameTime;
+        double fitness=ttl/runGameTime+1.0/ttl_step*10;
+        return Math.max(1/fitness,0.000000000001);
     }
 }

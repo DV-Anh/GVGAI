@@ -25,13 +25,13 @@ public class Agent extends AbstractPlayer {
     private int ELITIST_SIZE = POPULATION_SIZE;
 
     private int TOURNAMENT_SIZE = 1;
+//12 41 66 8311 1377
 
-
-    private int INDIVIDUAL_DEPTH = 28;
-    private int CROSSOVER_RATE = 45;
-    private int MUTATION_RATE = 18;
-    private int WIN_BONUS=3450;
-    private int LOSE_PENALTY=897;
+    private int INDIVIDUAL_DEPTH = 12;
+    private int CROSSOVER_RATE = 41;
+    private int MUTATION_RATE = 66;
+    private int WIN_BONUS=8311;
+    private int LOSE_PENALTY=1377;
 
 //    private int SIMULATION_DEPTH = 0;
 //    private int SIMULATION_REPEATS = 0;
